@@ -31,22 +31,21 @@ Quick start:
 
 A quick start with the code, try:
 
-`  
-examples/TestRun.py  
+`examples/TestRun.py`  
 and then, after a few minutes  
-examples/TestPlot.py  
-`
+`examples/TestPlot.py`  
+
 
 But this is now how we normally run the code. To fit for LCDM using
 BOSS BAO without assuming you know what rd is, say something
 
-Run/driver.py pre LCDM BBAO
+`Run/driver.py pre LCDM BBAO`
 
 To fit for oLCDM using Lyman-alpha BAO and LyaCross BAO +Planck say 
 
-Run/driver.py phy oLCDM LBAO+Planck
+`Run/driver.py phy oLCDM LBAO+Planck`
 
-Run/driver.py will print all possible options
+`Run/driver.py` will print all possible options
 
 
 How does it work:
