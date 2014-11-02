@@ -16,24 +16,26 @@ pedagogical reasons.
 
 
 Directory structure:
-====================
+--------------------
 
-py - analysis code
-Run - actual executables - you should read them like scripts
-data - data files
-chains - empty directory to store chains
-example - a simple example to see how the code works
-tools - various tools we use for plotting, etc.
-attick - various hacks and tests
+py - analysis code  
+Run - actual executables - you should read them like scripts  
+data - data files  
+chains - empty directory to store chains  
+example - a simple example to see how the code works  
+tools - various tools we use for plotting, etc.  
+attick - various hacks and tests  
 
 Quick start:
-=============
+------------
 
 A quick start with the code, try:
 
-examples/TestRun.py
-and then, after a few minutes
-examples/TestPlot.py.
+`  
+examples/TestRun.py  
+and then, after a few minutes  
+examples/TestPlot.py  
+`
 
 But this is now how we normally run the code. To fit for LCDM using
 BOSS BAO without assuming you know what rd is, say something
@@ -48,7 +50,7 @@ Run/driver.py will print all possible options
 
 
 How does it work:
-=================
+-----------------
 
 It was supposed to be minimal, allowing any one to add models, without
 being spaghetti.
