@@ -2,7 +2,7 @@ april
 =====
 
 A simple MCMC code for cosmological parameter estimation where only
-expansion history matters.
+expansion history matters. Written by Anže Slosar and Jose Vazquez.
 
 This is the github version, based off internal BOSS svn. It should
 work, but feel free to complain to me (Anže Slosar).
