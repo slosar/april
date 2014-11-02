@@ -1,7 +1,18 @@
 april
 =====
 
-A simple MCMC code for cosmological parameter estimation where only expansion history matters.
+A simple MCMC code for cosmological parameter estimation where only
+expansion history matters.
+
+This is the github version, based off internal BOSS svn. It should
+work, but feel free to complain to me (Anže Slosar).
+
+This code is not intendent as a replacement of CosmoMC. It simply
+reimplements the homogeneus part of cosmomc code. This allows one to
+fit BAO data, etc. in the spirit of arxiv:xxxx for any bat-shit crazy
+model without much hassle and very quickly. One just needs to define
+how Hubble parameter varies with redshift. It might also be useful for
+pedagogical reasons.
 
 
 Directory structure:
