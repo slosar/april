@@ -17,8 +17,8 @@ mnu_par = Parameter("mnu", 0.06, 0.1, (0,1.0), "\Sigma m_{\\nu}")
 Nnu_par = Parameter("Nnu", 3.046, 0.5, (3.046,5.046), "N_{\\rm eff}")
 
 Ok_par = Parameter("Ok",0.0, 0.1, (-1.5, 1.5), "\Omega_k")
-w_par = Parameter("w",-1, 0.5, (-2.0,0.0), "w_0")
-wa_par = Parameter("wa",0.0,0.5, (-2.0,2.0), "w_a" )
+w_par = Parameter("w",-1.0, 0.1, (-2.0,0.0), "w_0")
+wa_par = Parameter("wa",0.0, 0.1, (-2.0,2.0), "w_a" )
 
 
 ## this is the prefactor parameter c/rdH0
@@ -69,12 +69,20 @@ step_rho4_par   = None
 step_rho5_par   = None
 
 #Decaying Dark Matter
-lambda_par = Parameter("lambda",0.0, 0.02, (0,0.7), "\lambda")
-# let the fraction be limited by 0.1 at the bottom.
-xfrac_par    = Parameter("xfrac", 1.0, 0.1, (0.1, 1.0), "f_x")
+lambda_par = Parameter("lambda",1.0, 1.0, (0.,20.0), "\lambda")
+xfrac_par    = Parameter("xfrac", 0.1, 0.1, (0.0, 1.0), "f_x")
 
 #Early Dark Energy
 Ode_par   = Parameter("Ode", 0.05, 0.01, (0,0.9), "\Omega^e_{\\rm de}")
 
 #Slow-Roll DE
 dw_par = Parameter("dw",0, 0.1, (-1.0,1.0), "\delta w_0")
+
+#QuinDE
+lam_par = Parameter("lam", 1, 0.5, (0, 5), "\lambda")
+V0_par = Parameter("V0", 1, 1, (0, 30), "V_0")
+A_par  = Parameter("A", 10, 1, (-20, 20), "A")
+B_par 	= Parameter("B", -20, 2, (-100, 100), "B")
+
+#wDark Matter
+wDM_par = Parameter("wDM",0.0, 0.1, (-1.0,1.0), "w_{DM}")

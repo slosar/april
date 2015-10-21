@@ -3,17 +3,41 @@
 from scipy import *
 import pylab,sys
 
-
 ## get the latest chain dir
 sys.path.append("Pack")
 import latest
 
 cdir = 'chains_SimpleMC/'
-#cdir= '/chains_140630_157330/'
 
-nlist=['BetouleSN','DR11LOWZ','DR11CMASS','DR11LyaAuto','DR11LyaCross','MGS','SixdFGS']
 
-modell= ['WeirdCDM','LCDM_Neff','nuLCDM','DecayFrac','EarlyDE','SlowRDE','owaCDM','waCDM','owCDM','wCDM','oLCDM','LCDM']
+nlist=['DR11LOWZ','DR11CMASS','DR11LyaAuto','DR11LyaCross','MGS','SixdFGS']
+modell= ['owaCDM','waCDM','owCDM','wCDM','oLCDM','LCDM']
+
+
+if len(sys.argv)>1: 
+   data=sys.argv[1:]
+   Paper = 'F'
+else:
+   Paper = 'T'
+   dataset = "BBAO+SN+Planck"
+   nlist.insert(0,'BetouleSN')
+   modell =['WeirdCDM','LCDM_Neff','nuLCDM','DecayFrac','EarlyDE','SlowRDE'] + modell
+
+ 
+#Print same for other datasets
+if Paper == 'F':	
+  for d in data:
+    if d =="BBAO":
+        dataset = "BBAO"		
+    elif d == "BBAO+Planck":	
+        dataset = "BBAO+Planck" 	
+        modell =['StepCDM','SlowRDE','WeirdCDM','nuLCDM','nuoLCDM','nuwCDM','DecayFrac','SlowRDE'] + modell
+    elif d == "BBAO+SN+Planck":
+        dataset = "BBAO+SN+Planck"  
+        nlist.insert(0,"BetouleSN")
+        modell= ['PolyCDM','StepCDM','WeirdCDM','LCDM_Neff','nuLCDM','nuoLCDM','nuwCDM','DecayFrac','EarlyDE','SlowRDE'] + modell
+    else:
+        print 'Only BBAO, BBAO+Planck or BBAO+SN+Planck datasets'	
 
 mnames = { 'LCDM':'$\\Lambda$CDM',
            'oLCDM':'$o\\Lambda$CDM',
@@ -23,11 +47,15 @@ mnames = { 'LCDM':'$\\Lambda$CDM',
            'owaCDM': '$ow_0w_a$CDM', 
            'LadoCDM': 'PolyCDM',
            'LCDMmasslessnu': '($\\nu=0$)CDM',
-           'nuLCDM': '$\\nu$CDM',
-	   'LCDM_Neff': '$\Delta N_{\\rm eff}$$^*$',
+           'nuoLCDM': '$\\nu$oCDM',
+	   'nuwCDM': '$\\nu$wCDM',
+	   'nuLCDM': '$\\nu$CDM',  
+	   'LCDM_Neff': '$\Delta N_{\\rm eff}$',
            'EarlyDE': 'Early DE',
            'DecayFrac': 'Decay DM Fr',
            'WeirdCDM': 'Tuned Osc',
+	   'StepCDM': 'Step',
+	   'PolyCDM': 'Poly',
            'SlowRDE': 'Slow-roll DE'}
 
 
@@ -41,9 +69,13 @@ mdof = {   'LCDM':3,
            'LCDMmasslessnu': 4,
 	   'LCDM_Neff': 5,
            'nuLCDM': 4,
+	   'nuoLCDM': 5,
+	   'nuwCDM': 5,	
            'EarlyDE': 4,
            'DecayFrac': 5,
            'WeirdCDM': 6,
+	   'StepCDM': 7,
+	   'PolyCDM': 6,
            'SlowRDE': 4}
 
 colors= { 'DR11LOWZ':'red',
@@ -102,6 +134,8 @@ class plot_bar:
                     logls2=loglsx
         logls=logls2[0].split(' ')[2:]
         chi2d={}
+	print ' '
+	print '++++'+ model
         for pname, logl in zip(pnames,logls):
             if "_like" in pname:
                 ppname=pname.split(' ')
@@ -118,7 +152,9 @@ class plot_bar:
                            chi2=chi2 -30 	      
       		chiT+=chi2
                 xname=ppname[0].replace('_like','')
+		print xname, chi2
                 chi2d[xname]=chi2
+	print 'Min_chi2 = ', chiT+30
 
 	
 	param=mdof[model]
@@ -131,8 +167,11 @@ class plot_bar:
             PP=pylab.barh(self.cy-0.25,chi2,left=left,height=0.5,color=color, linewidth=0)
             self.patches[xname]=PP[0]
             left+=chi2
-			
-	    pylab.text(position, self.cy-0.25, r' %.2f / %s'%(chiT +30, dof-param +30)  , fontsize=15)
+	   
+ 	    if "SN" in dataset:				
+	       pylab.text(position, self.cy-0.25, r' %.2f / %s'%(chiT +30, dof-param +30)  , fontsize=15)
+	    else:
+	       pylab.text(position, self.cy-0.25, r' %.2f / %s'%(chiT, dof-param)  , fontsize=15)		
         self.ys.append(self.cy)
         self.cy+=1
         self.names.append(cname)
@@ -184,11 +223,14 @@ for model in modell:
     if 'Neff' in model:
 	P.add_bar(model+'_PL_BBAO_JLA',nn, model)	
     else: 
-	P.add_bar(model+'_phy_BBAO+SN+Planck',nn, model)	
+        P.add_bar(model+'_phy_'+ dataset,nn, model)	
 
 P.close()
 pylab.text(position, 1.5, '$\chi^2$ / d.o.f'  , fontsize=20)
 pylab.xlim(0,position+2.5)
-pylab.savefig("Chisq.pdf")
+if Paper == 'F':
+ pylab.savefig("Chisq_"+dataset+".pdf")
+else: 
+ pylab.savefig("Chisq.pdf")
 pylab.show()
 

@@ -10,6 +10,13 @@ else:
   lst=['S3','S5','HLadder','smoking','Early','poly','SlowRDE','step']
 
 for l in lst:
+  if l=='wDM':
+      wqsubmit ('phy', 'wDM','BBAO+PlRd',3,30000)
+	
+  if l=='Quint':
+    for datasets in ['BBAO+Planck', 'BBAO']:
+      wqsubmit ('phy', 'Quint_last',datasets,5,60000)
+
   if l=='S3':
     for datasets in ['GBAO','LBAO','BBAO']:
       wqsubmit ('phy', 'LCDM',datasets,5,60000)
@@ -21,6 +28,11 @@ for l in lst:
     for model in ['LCDM','oLCDM','wCDM','owCDM','waCDM','owaCDM','LCDMmasslessnu','nuLCDM','nuoLCDM']:
       for datasets in ['BBAO+Planck','SN+Planck','BBAO+SN+Planck']:
         wqsubmit ('phy',model,datasets,5,60000)
+
+  elif l=='onlyBAO':
+    for model in ['LCDM','oLCDM','wCDM','owCDM','waCDM','owaCDM']:
+      for datasets in ['BBAO']:
+	wqsubmit ('phy',model,datasets,5,60000)	
 
   elif l=="mnuw":
     for model in ['nuwCDM']:
@@ -45,13 +57,19 @@ for l in lst:
     for datasets in ['BBAO','Planck','BBAO+Planck','BBAO+SN+Planck']:
       for models in ['Decay01', 'Decay05']:
         wqsubmit('phy',models,datasets, 8, 30000)
+
   elif l=='decaybig':
     for datasets in ['BBAO+Planck','BBAO+SN+Planck']:
-      for models in ['Decay','Decay01', 'Decay05']:
+#      for models in ['Decay','Decay01', 'Decay05']:
+      for models in ['Decay01']:
+        wqsubmit('phy',models,datasets, 24, 100000)
+  elif l=='decaybig2':
+    for datasets in ['BBAO+Planck']:
+      for models in ['Decay01']:
         wqsubmit('phy',models,datasets, 64, 10000)
 
   elif l=='decaytest':
-    for datasets in ['CMASS+Planck']:
+    for datasets in ['LBAO+Planck']:
       for models in ['Decay']:
         wqsubmit('phy',models,datasets, 64, 10000)
 

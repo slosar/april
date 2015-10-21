@@ -63,9 +63,9 @@ class plot_aux():
         elif 'PLA:base:planck_lowl_lowLike:'==dataset:
           cosmodata = 'Planck (full)'
         elif 'mnu_AL_PL_BBAO' ==dataset:
-          cosmodata = 'BAO + Planck (full; $A_L$ free)'
+          cosmodata = 'BAO+Planck (full; $A_L$ free)'
         elif 'mnu_PL_BBAO' ==dataset:
-          cosmodata = 'BAO + Planck (full; $A_L=1$)' 
+          cosmodata = 'BAO+Planck (full; $A_L=1$)' 
         elif 'NFC:r_PL_LBAO'==dataset:
           cosmodata = 'Lyman-$\\alpha$ BAO + Planck (full, $N_{\\rm eff},r$)'
         elif 'NFC:r_PL_BBAO_JLA'==dataset:
@@ -115,7 +115,7 @@ class plot_aux():
                 else:
                   fx=1.0
                 C['lambdaf']=C['lambda']*fx
-                C.lname['lambdaf']='$\lambda f_x$'
+                C.lname['lambdaf']='\\lambda f_x'
               if type(Nb)==type([]):
                 Nbx=Nb[cc]
               else:
@@ -124,8 +124,6 @@ class plot_aux():
                 xx,yy=C.GetHisto(param[0],NormPeak=False,nbins=Nbx,mnval=minmax[0],mxval=minmax[1])
               else:
                 xx,yy=C.GetHisto(param[0],NormPeak=False,nbins=Nbx)
-
-              print xx,yy,minmax,'XXX'
 
               if legend:
                 label=legend[cc]
@@ -173,14 +171,19 @@ class plot_aux():
 
 
 
-  def Plotting_2d(self, dire, modell, extra, datasetl, param, Nb=50, Ol=False, lwidth=None,loc=None,fillcolor=None, legcolor=False): 
+  def Plotting_2d(self, dire, modell, extra, datasetl, param, Nbin=50, Ol=False, 
+                  lwidth=None,loc=None, fillcolor=None, legcolor=False,labels=None): 
         pylab.figure(figsize=(9,6))
         a=0
         for model in modell:
            for dataset in datasetl:
+             if type(Nbin)==type([1,2,3]):
+               Nb=Nbin[a]
+             else:
+               Nb=Nbin
              C=cosmochain(self.get_filename(dire,model,extra,dataset))
              if 'NFC' in dataset:
-               Nb=20
+               Nb=19
              try:
                C['h']=C['H0*']/100.0
                C.lname['h']='h'
@@ -196,6 +199,16 @@ class plot_aux():
                C.lname['Om']='\Omega_m'
              except:
                pass
+             if "Decay" in model:
+                if "01" in model:
+                  fx=0.1
+                elif "05" in model:
+                  fx=0.5
+                else:
+                  fx=1.0
+                C['lambdaf']=C['lambda']*fx
+                C.lname['lambdaf']='\\lambda f_x'
+
 
              if lwidth:
                 lwh=lwidth[a]
@@ -211,8 +224,11 @@ class plot_aux():
              if Ol == 'True':
                  C['Ol']=1-C['Ok']-C['Om']
                  C.lname['Ol']='\Omega_\Lambda'
-		
-             C.Plot2D(param[0], param[1],filled=fcol, lw=lwh, label=self.ldata(dataset), N=Nb)
+             if labels:
+               lab=labels[a]
+             else:
+               lab=self.ldata(dataset)
+             C.Plot2D(param[0], param[1],filled=fcol, lw=lwh, label=lab, N=Nb)
 	     a+=1	         
                 
           

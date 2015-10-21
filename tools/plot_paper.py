@@ -7,21 +7,20 @@ import pylab, sys
 
 params1 = {'backend': 'pdf',
                'axes.labelsize': 32,
-               'text.fontsize': 20,
                'xtick.labelsize': 24,
                'ytick.labelsize': 24,
-               'legend.draw_frame': False,
-               'legend.fontsize': 16,	
+               'legend.fontsize': 20,	
                'lines.markersize': 6,
                'font.size': 20,
-               'text.usetex': True}#
+               'text.usetex': True}
 pylab.rcParams.update(params1)
 
 #-----------
-try:
-  dire=sys.argv[2]
-except:
-  dire = 'chains_SimpleMC/'
+
+dire = 'chains_SimpleMC/'
+# for decay!
+dire = 'chains/'
+#3dire="decay2/"
 #dire = 'chains_140630_157330/'
 show=True #False
 
@@ -32,7 +31,7 @@ if len(sys.argv)>1:
 else:
   lst=['S5','S3','Early','HLadder','smoking','SlowRDE']
 
-T= plot_aux()
+T=plot_aux()
 
 for l in lst:
   if l=='S5':
@@ -118,15 +117,17 @@ for l in lst:
 
 #######################
   if l=='Decay2':
-	datasetl = ['BBAO+Planck','BBAO+SN+Planck']
+	datasetl = ['BBAO+SN+Planck']
 	extra    = 'phy'
-	model   = ['DecayFrac']
-	params  = ['xfrac','lambda']
-	T.Plotting_2d(dire,model, extra, datasetl, params,loc='upper right',legcolor=True,Nb=20)
-	pylab.xlabel('$f_d$')
-	pylab.xlabel('$\lambda$')
+	model   = ['Decay01','Decay05','Decay']
+	params  = ['lambdaf','Om']
+	T.Plotting_2d(dire,model, extra, datasetl, params,loc='upper right',
+                      legcolor=True,Nbin=[25,30,30], labels=['$f_x=0.1$','$f_x=0.5$','$f_x=1$'])
+	#pylab.xlabel('$f_d$')
+	#pylab.xlabel('$\\lambda$')
 	pylab.tight_layout()
-	pylab.savefig('xfla.pdf')
+        pylab.xlim(0,1.2)
+	pylab.savefig('decay2d.eps')
 	if show: pylab.show()
 
 
@@ -144,6 +145,7 @@ for l in lst:
         lw=[3,3]
 	T.Plotting_2d(dire,model, extra, datasetl, params, lwidth=lw, fillcolor=fcol, loc='upper left')
         pylab.ylim(0.63,0.9)
+	pylab.xlabel('$N_{\\rm eff}$')
 	pylab.tight_layout()
 	pylab.savefig('neff-h.pdf')
 	if show: pylab.show()
@@ -163,6 +165,12 @@ for l in lst:
 	model    =  ['nuLCDM']
 	params   =  ['mnu']
 	T.Plotting_1d(dire, model, extra, datasetl, params, Nb=80,minmax=[0.0,1.0])
+        lims=[0.56, 0.44, 0.25]
+        y1,y2=pylab.ylim()
+        for l,c,i in zip(lims,['r','b','g'],range(3)):
+          pylab.plot([l,l],[y1,y2],c+'--', lw=2)
+          pylab.text(l,3+i,'$<$%geV'%l, color=c)
+
         pylab.xlim(0,1.0)
         pylab.tight_layout()
 	pylab.savefig('mnu.pdf')
@@ -190,15 +198,15 @@ for l in lst:
   if l=='smoking' or l=='decay':
 	extra    = 'phy'
 
-	datasetl = ['BBAO+Planck']
+	datasetl = ['BBAO+SN+Planck']
 	model    =  ['Decay','Decay05','Decay01']
 	params   =  ['lambdaf']
-	T.Plotting_1d(dire, model, extra, datasetl, params,Nb=[60,60,58],
-                      legend=['$f_x=1$','$f_x=0.5$','$f_x=0.1$'], minmax=[0.0,0.15])
+	T.Plotting_1d(dire, model, extra, datasetl, params,Nb=[60,60,58]*2,
+                      legend=['$f_x=1$','$f_x=0.5$','$f_x=0.1$']*2, minmax=[0.0,1.0])
         pylab.tight_layout()
-        pylab.xlim(0.,0.15)
-        #pylab.ylim(0, pylab.ylim()[1])
-	pylab.savefig('decay.pdf')
+        pylab.xlim(0.,0.8)
+        pylab.ylim(0, pylab.ylim()[1])
+	pylab.savefig('decay.eps')
 	if show: pylab.show()
 
   if l=='smoking' or l=='tlight':
@@ -260,7 +268,7 @@ for l in lst:
 
 
 	extra    =   'pre'
-	datasetl = ['BBAO','GBAO+PlDa', 'LBAO+PlDa', 'BBAO+PlDa']	
+	datasetl = ['GBAO+PlDa', 'LBAO+PlDa', 'BBAO', 'BBAO+PlDa']	
 	model    =  ['oLCDM']
 	params   =  ['Ol']
 	T.Plotting_1d(dire, model, extra, datasetl, params, Ol='True',loc='upper left', legcolor=True)
@@ -282,7 +290,8 @@ for l in lst:
         extra    = 'pre'
 	params   =  ['Om','Ol']
 	lw=[4,4,4]
-	T.Plotting_2d(dire, model, extra, datasetl, params, lwidth=lw, loc='upper left', Ol='True',legcolor=True,Nb=40)
+	lcolor=['green','black']
+	T.Plotting_2d(dire, model, extra, datasetl, params, lwidth=lw, fillcolor=lcolor, loc='upper left', Ol='True',legcolor=True,Nb=40)
 	pylab.ylabel('$\\Omega_{\Lambda}$')
 	pylab.plot([0,1],[1,0],'k:')
 	pylab.axis([0.0,0.5,0.0,1.3])
@@ -305,7 +314,7 @@ for l in lst:
 	pylab.text(56, 1.7, r'CMB+$\Lambda$CDM', fontsize=16)
 
 	T.plotH(2.2,'','N: 73.8 2.4','r','Riess++')
-	T.plotH(2.4,'','N: 74.3 2.1','r','Freedmann++')
+	T.plotH(2.4,'','N: 74.3 2.1','r','Freedman++')
 	T.plotH(2.6,'','N: 72.5 2.5','r','Efstathiou')
 	pylab.text(56, 2.5, r'Distance Ladder', fontsize=16)
 

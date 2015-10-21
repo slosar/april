@@ -30,7 +30,7 @@ class TabulatedBAODVLikelihood (BaseLikelihood):
         try:
             chi2=self.chi2i(alpha)
         except:
-            print "Note: alpha for ",self.name(),"out of lookup-table bounds"
+            #print "Note: alpha for ",self.name(),"out of lookup-table bounds"
             chi2=9
         return -chi2/2.0
 

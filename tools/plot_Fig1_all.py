@@ -78,7 +78,7 @@ if plaw>0:
     if eboss:
         legend1=pylab.legend([l1,l2,l3],["$D_%s(z)/r_d\\sqrt{z}$"%st for st in ['M','V','H']],loc="lower center", bbox_to_anchor = (0.7, 0.0))
     else:
-        legend1=pylab.legend([l1,l2,l3],["$D_%s(z)/r_d\\sqrt{z}$"%st for st in ['M','V','H']],loc="lower center")
+        legend1=pylab.legend([l1,l2,l3],["$%sD_%s(z)/r_d\\sqrt{z}$"%st for st in [('','M'),('','V'),('z','H')]],loc="lower center")
 else:
     legend1=pylab.legend([l1,l2,l3],["$D_%s(z)/r_d\log(1+z)$"%st for st in ['A','V','H']],loc="lower center")
 
@@ -148,7 +148,7 @@ plt.yticks(range(0, 50, 10))
 
 
 if plaw>0:
-    pylab.ylabel("$D(z)/r_d\\sqrt{z}$")
+    pylab.ylabel("${\\rm distance}/r_d\\sqrt{z}$")
     pylab.xlabel("$z$")
     pylab.tight_layout()
     if (eboss):

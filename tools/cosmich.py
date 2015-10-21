@@ -9,19 +9,35 @@ from scipy import *
 import pylab
 import numpy.fft as fft
 from  scipy.interpolate import UnivariateSpline
+import numpy as np
 
-def myloadtxt(fname):
+def myloadtxt(fname,cols=None):
     ## fixed the annoying "setting an array element with a sequence."
     ## when chain still runnig.
-    da=open(fname).readlines()[:-1]
-    da=array([map(float, line.split()) for line in da])
+    da=[]
+    bad=[]
+    for line in open(fname).readlines()[:-2]:
+        try:
+            cline=map(float,line.split())
+        except ValueError:
+            continue
+        if (cols==None):
+            cols=len(cline)
+        if len(cline)==cols:
+            da.append(cline)
+        else:
+            bad.append(cline)
+    da=np.array(da)
+    if (len(bad)):
+        print "BAD=",bad
     return da
+
 
 class cosmochain:
     
     def __init__ (self,root, nums='auto', skip_=None,temp=1.0, balance=True, weightfunc=None, kirkby=False):
 
-        if (balance and ("PLA" in root or "neffch" in root)):
+        if (balance and ("PLA" in root or "neffch" in root or "Decay" in root)):
             balance=False
 
         ## get file list
@@ -71,7 +87,9 @@ class cosmochain:
                 cdata=array([ [1,0]+map(float,x.split()) for x in cdata])
 
             else:
-                da=myloadtxt(fname)
+                da=myloadtxt(fname,cols=len(self.paramnames)+2)
+                if len(da)==0:
+                    continue
                 if (skip_==None):
                     finlike = da[-1,1]
                     ii=0

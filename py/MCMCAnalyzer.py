@@ -11,7 +11,8 @@ from random import *
 from math import *
 from scipy import *
 import scipy.linalg as la
-import copy, random
+import copy, random, sys
+import os.path as path
 
 class MCMCAnalyzer:
     def __init__ (self,like,outfile, skip=5000, nsamp=100000, temp=1.0, cov=None, chain_num=None):
@@ -51,8 +52,9 @@ class MCMCAnalyzer:
         self.cloglike,self.cloglikes=self. getLikes()
         ## set up logofs based on the first log like which should be
         ## the same for all chains. Better than nothing.
-        self.logofs=self.cloglike
-
+        #self.logofs=self.cloglike
+        ## Actually, above doesn't seem to work very well. Instead, use zero, as our likelihoods never became very large
+        self.logofs=0
         ## current weight
         self.cw=0
         ## current counter
@@ -130,11 +132,18 @@ class MCMCAnalyzer:
         formstr+='\n'
 
         if (self.chain_num==None):
-            self.fout=open(outfile+".txt",'w')
-            self.mlfout=open(outfile+".maxlike",'w')
+            cfname=outfile+".txt"
+            mlfnameoutfile+".maxlike"
         else:
-            self.fout=open(outfile+"_%i.txt"%(self.chain_num),'w')
-            self.mlfout=open(outfile+"_%i.maxlike"%(self.chain_num),'w')
+            cfname=outfile+"_%i.txt"%(self.chain_num)
+            mlfname=outfile+"_%i.maxlike"%(self.chain_num)
+
+        if (path.isfile(cfname)):
+            print "Due to bad habits in the past, won't open existing file.", cfname
+            sys.exit(1)
+        self.fout=open(cfname,'w')
+        self.mlfout=open(mlfname,'w')
+
 
         self.formstr=formstr
 

@@ -2,6 +2,8 @@
 
 from scipy import *
 from cosmich import *
+from ChainIterator import *
+from RunBase import *
 import pylab, sys
 import string
 import math as N
@@ -19,52 +21,36 @@ import math as N
 #pylab.rcParams.update(params1)
 
 
-#-----------
-#dire = 'final_chains/'
-dire='/astro/u/jvazquez/work/SimpleMC/trunk/chains/EDE/'
-#dire = '/gpfs01/astro/workarea/jvazquez/chains/'
-#dire = '/astro/u/jvazquez/BOSS/cosmomc_july_14/chains/'
-
-#At the moment, 2D-plot is valid for only one couple of parameters, and may use several models/datasets
-#At the moment, 1D-plot is valid for only one model, and may use several parameters/datasets
-
-model_1D = 'EarlyDE'
-model_2D  = ['EarlyDE','EarlyDE_rd_DE']
-
-extra    = 'phy'
-datasetl  = ['phy_BBAO+SN+Planck','rd_DE_phy_BBAO+SN+Planck']
-#datasetl  = ['phy_BBAO','BBAO']
-#-----------
-
-Plot_2D   = 'False'
-param_x   = 'Ode'
-param_y   = 'Om'
-
-NBins_2D = 20
-
-xrange_2D = 'False'
-xmin, xmax = 0.5, 1
-ymin, ymax = 0, 0.8
+#2D-plotting is valid for only one couple of parameters, and may use several models/datasets
+#1D-plotting is valid for only one model, and may use several parameters/datasets
 
 #-----------
+dire = 'chains_SimpleMC/'
+name_fig  = 'Plot'
+datasetl  = ['BBAO']
 
+#------------------
 Plot_1D   = 'True'
-params_1D      =['Ode']
-#params_1D     = ['omegam*','H0*','omegabh2']
-#params_1D    = ['6DF*','DR11LOWZ*','MGS*','DR11CMASS*','Lya_Auto_Busca*','Lya_Cross_Andreu*']
+model_1D  = 'LCDM_phy'
+params_1D = ['h']
+NBins_1D  = 40
 
-NBins_1D = 25
-
-xrange   = 'False'
+xrange    = 'False'
 xmin_1, xmax_1 = 0, 3
 xmin_2, xmax_2 = 0, 5
-xmin_3, xmax_3 = 0, 5
-xmin_4, xmax_4 = 3, 5.5
-xmin_5, xmax_5 = 3.5, 5.5
 
-name_fig  = 'Plot_2'
+#-----------------------
+Plot_2D   = 'False'
+model_2D  = ['LCDM_phy']
+param_2D  = ['Om','h']
+NBins_2D  = 40
 
-#-------------
+xrange_2D = 'False'
+xmin, xmax = 0.2, 0.4
+ymin, ymax = 0.6, 0.75
+
+#---------------------------------------------------------------------------------
+
 
 def colour(x):
     if x==1: return 'black'
@@ -83,51 +69,6 @@ def color_legend(leg):
         for line, txt in zip(leg.get_lines(), leg.get_texts()):
                 txt.set_color(line.get_color())
 
-def label_m(name):
-    with open('/gpfs01/astro/workarea/jvazquez/chains/LCDM_phy_BBAO+CMBP.paramnames') as inf:
-      for line in inf:
-        parts = line.split()
-        if len(parts) > 1:   
-            if name in parts:
-                return '$'+str(parts[1])+'$'   
-
-def label_n(name):
-    if 'omegabh2' in name: return   '$\Omega_b h^2$'	
-    if 'omegam*'  in name: return   '$\Omega_m$'
-    if 'H0*'      in name: return   '$H_0$'
-    if 'DR11LOWZ*' in name: return 'LOWZ'
-    if 'DR11CMASS*' in name: return 'DR11CMASS'
-    if 'Lya_Auto_Busca*' in name: return 'DR11LyaAuto'
-    if 'Lya_Cross_Andreu*' in name: return 'DR11LyaCross'
-    if 'MGS*' in name: return 'MGS'
-    if '6DF*' in name: return '6DF'
- 
-    if 'Obh2' in name: return '$\\Omega_bh^2$'
-    if 'Om'   in name: return '$\\Omega_m$'
-    if 'h'    in name: return '$h$'
-    if 'Ok'   in name: return '$\\Omega_k$'
-    if 'w'    in name: return '$w$'
-    if 'wa'   in name: return '$w_a$'
-    if 'Pr'   in name: return '$c/(H_0 r_d)$'
-    if 'mnu'  in name: return '$\\sum m_\\nu$'
-    if 'beta' in name: return '$\\beta$'
-    if 'Sp1'  in name: return '$w(z_1)$'
-    if 'Sp2'  in name: return '$w(z_2)$' 
-    if 'Sp3'  in name: return '$w(z_3)$'
-    if 'Sp4'  in name: return '$w(z_4)$'
-    if 'Lambda' in name: return '$\\lambda$'
-    if 'Omr'  in name:  return '$\\Omega_{r_x}$'
-    if 'Ode'  in name: return '$\\Omega^e_{\\rm de}$'
-    if 'DR11LOWZ*' in name: return 'LOWZ'
-   
-
-def cosmodata2(datsets):
-	cosmodata=''
-	if 'phy' in datasets:
-		cosmodata= 'SimpleMC'
- 	else:
-		cosmodata= 'CosmoMC'
-	return cosmodata
 
 def cosmodata(datasets):
         cosmodata=''
@@ -157,70 +98,71 @@ def cosmodata(datasets):
                 cosmodata=cosmodata+'6dFGS'
         return cosmodata
 
-a=0
+
 if 'True' in Plot_2D:
+  a=0
   for model in model_2D:    
      for datasets in datasetl:
         a+=1             
 
-	C=cosmochain(dire+ model+'_'+extra+'_'+datasets)
-        C.Plot2D(param_x, param_y, filled=colour(a), label=cosmodata(datasets), N=NBins_2D)
+	C=cosmochain(dire+ model+'_'+datasets)
+        C.Plot2D(param_2D[0], param_2D[1], filled=colour(a), label=cosmodata(datasets), N=NBins_2D)
 
   if 'True' in xrange_2D:   
      pylab.xlim(xmin,xmax)
      pylab.ylim(ymin,ymax)
 
-  if 'EarlyDE' in model_2D:
-      Ode = arange(0,0.5,0.01)
-      Om=[0.3/(1+Odes) for Odes in Ode]
-      Om2=[0.3*(1-Odes) for Odes in Ode]
-
-      pylab.plot(Ode,Om,'r--')
-      pylab.plot(Ode,Om2,'r-')
-
   leg=pylab.legend()
   leg.draw_frame(False)		# No box & colour legend
   color_legend(leg)
 
-  pylab.xlabel(label_n(param_x))
-  pylab.ylabel(label_n(param_y))
+  pylab.xlabel(C.latexname(param_2D[0]))
+  pylab.ylabel(C.latexname(param_2D[1]))
   pylab.savefig(name_fig+'_2D.pdf')
   pylab.show()
 
 
 
-
-
-a=0
 if 'True' in Plot_1D:
+   a=0
    for datasets in datasetl:
-      a+=1
       b=0
       for params in params_1D:
         b+=1
-
 	pylab.subplot(1,len(params_1D),b)
 	C=cosmochain(dire+ model_1D+'_'+datasets,'auto')	
-        #C=cosmochain(dire+ model_1D+'_'+extra+'_'+datasets,'auto')
 
-	if 'phy' in datasets:
-	    if 'H0' in params:
-		C[params]= 100*C[params]	
-#	    if '*' in params:
-#		C[params]=-2*C[params]	
+        C=ChainIterator('chains_140411_155701','LCDM','phy','BBAO+CMBP')
+        grlist=[]
+	wlist=[]
+	for i in range(0,C.N,1000):
+	    T=C.theory(i)
+	    grlist.append(T.growth(10.0))
+	    wlist.append(C.weight(i))
+
+	grlist=array(grlist)
+	wlist=array(wlist)
+	mn=(grlist*wlist).sum()/wlist.sum()
+	er=sqrt((grlist**2*wlist).sum()/wlist.sum()-mn**2)
+	print "growth z=10/z=0 = ",mn,"+/-",er
+
+
+
+	a+=1
         xx,yy=C.GetHisto(params,NormPeak=True,nbins=NBins_1D)	
-        pylab.plot(xx, yy, colour(a), label=cosmodata2(datasets))
+        pylab.plot(xx, yy, colour(a), label=cosmodata(datasets))
 
         if 'True' in xrange:
             xmin="xmin_"+str(b)
             xmax="xmax_"+str(b) 
             pylab.xlim(eval(xmin),eval(xmax))
 
-        pylab.xlabel(label_n(str(params)))
+        pylab.xlabel(C.latexname(str(params)))
         pylab.ylabel('prob.')
 
-   pylab.tight_layout() 
-   pylab.legend(loc='upper right')
+   leg=pylab.legend(loc='upper right')
+   leg.draw_frame(False)
+   color_legend(leg)
    pylab.savefig(name_fig+'_1D.pdf')
    pylab.show()
    

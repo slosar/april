@@ -1,7 +1,8 @@
 #Add paths, we want to be able to run in either root or Run/
 import sys,os
-sys.path.append("py")
-sys.path.append("../py")
+#print sys.path
+sys.path=["py","../py"]+sys.path
+
 
 #Cosmologies
 from LCDMCosmology import *
@@ -17,6 +18,8 @@ from DecayLCDMCosmology import *
 from StepCDMCosmology import *
 from EarlyDECosmology import *
 from SlowRDECosmology import *
+from QuintCosmology import *
+#from wDMCosmology import *
 
 #Like modules
 from BAOLikelihoods import *
@@ -83,7 +86,7 @@ def ParseModel(model):
     elif model=="DecayFrac":
         T=DecayLCDMCosmology() 
     elif model=="Decay":
-        T=DecayLCDMCosmology(varyxfrac=False) 
+        T=DecayLCDMCosmology(varyxfrac=False,xfrac=1.0) 
     elif model=="Decay01":
         T=DecayLCDMCosmology(varyxfrac=False,xfrac=0.1) 
     elif model=="Decay05":
@@ -98,6 +101,10 @@ def ParseModel(model):
         T=EarlyDECosmology(varyw=False)
     elif model=="SlowRDE":
         T=SlowRDECosmology(varyOk=False)
+    elif model=="Quint_last":
+	T=QuintCosmology()
+    elif model=='wDM':
+	T=wDMCosmology()
     else:
         print "Cannot recognize model", model
         sys.exit(1)
