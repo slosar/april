@@ -37,6 +37,8 @@ class MCMCAnalyzer:
         if (like.name()=="Composite"):
             self.sublikenames=like.compositeNames()
             self.composite=True
+        else:
+            self.composite=False
 
         if (cov==None):
         ## make initial cov matrix from diagonal "errors"
@@ -133,7 +135,7 @@ class MCMCAnalyzer:
 
         if (self.chain_num==None):
             cfname=outfile+".txt"
-            mlfnameoutfile+".maxlike"
+            mlfname=outfile+".maxlike"
         else:
             cfname=outfile+"_%i.txt"%(self.chain_num)
             mlfname=outfile+"_%i.maxlike"%(self.chain_num)

@@ -6,7 +6,10 @@
 class Parameter:
     def __init__(self,name,value,err=0, bounds=None,Ltxname=None):
         self.name=name
-        self.Ltxname = Ltxname
+        if Ltxname:
+            self.Ltxname = Ltxname
+        else:
+            self.Ltxname = name
         self.value=value
         # this is the estimate of error
         self.error=err
