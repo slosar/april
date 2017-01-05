@@ -14,6 +14,7 @@ class oLCDMCosmology(LCDMCosmology):
 
     ## my free parameters. We add Ok on top of LCDM ones (we inherit LCDM)
     def freeParameters(self):
+        Ok_par.setValue(self.Ok)
         l=[]
         if not self.zeroDE:
             l.append(Ok_par)
