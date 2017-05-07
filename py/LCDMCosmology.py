@@ -19,7 +19,9 @@ class LCDMCosmology(BaseCosmology,RadiationAndNeutrinos):
         self.fixOm=fixOm
         BaseCosmology.__init__(self,h)
         RadiationAndNeutrinos.__init__(self, mnu, Nnu, degenerate_nu, disable=disable_radiation)
-        if (self.rd_approx=="Anderson"):
+        if (type(self.rd_approx)==type(147.)):
+            self.rd_func_=lambda t1,t2,t3,t4:self.rd_approx
+        elif (self.rd_approx=="Anderson"):
             self.rd_func_=CA.rd_anderson_approx
         elif (self.rd_approx=="Cuesta"):
             self.rd_func_=CA.rd_cuesta_approx

@@ -29,7 +29,7 @@ class RadiationAndNeutrinos:
         self.varyMnu=False
         self.varyNnu=False
         self.NuDensity=NuDensity(CA.Tcmb, Nnu, mnu, degenerate)
-        print "Relic neutrino density:",self.NuDensity.omnuh2today
+        #print "Relic neutrino density:",self.NuDensity.omnuh2today
 
     def setVaryMnu(self,T=True):
         if self.disabled:
