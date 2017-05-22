@@ -16,9 +16,6 @@ plaw=0.5
 #for division by log(1+z) use this
 #plaw=-1
 
-eboss=True
-#True
-
 
 params1 = {'backend': 'pdf',
                'axes.labelsize': 20,
@@ -40,8 +37,8 @@ T=LCDMCosmology(Obh2=0.022,Om=0.31,h=0.676)
 
 zLOWZ  = 0.32 
 zCMASS = 0.57
-zLyaA  = 2.34-0.04
-zLyaC  = 2.36+0.04
+zLyaA  = 2.33
+zLyaC  = 2.40
 
 z6dFGS   = 0.106
 zMGS     = 0.15
@@ -56,6 +53,9 @@ z_CMB = 1090.43
 zCombBAO1 = 0.38
 zCombBAO2 = 0.51
 zCombBAO3 = 0.61
+
+zEBQSO=1.52
+
 
 rd_EHtoCAMB =153.19/149.28
 rd_fid_DR12 = 147.78
@@ -76,19 +76,14 @@ y3=[T.DVOverrd(z)/fixer(z)   for z in zl]
 
 fig = plt.figure(figsize=(9,6))
 ax = fig.add_subplot(1,1,1)
-if (not eboss):
-    ax.set_xscale('log')
-
+ax.set_xscale('log')
 
 l1,=plt.plot(zl,y1,'r-',lw=2)
 l2,=plt.plot(zl,y3,'b-',lw=2)
 l3,=plt.plot(zl,y2,'g-',lw=2)
 
 if plaw>0:
-    if eboss:
-        legend1=pylab.legend([l1,l2,l3],["$D_%s(z)/r_d\\sqrt{z}$"%st for st in ['M','V','H']],loc="lower center", bbox_to_anchor = (0.7, 0.0))
-    else:
-        legend1=pylab.legend([l1,l2,l3],["$%sD_%s(z)/r_d\\sqrt{z}$"%st for st in [('','M'),('','V'),('z','H')]],loc="lower center")
+    legend1=pylab.legend([l1,l2,l3],["$%sD_%s(z)/r_d\\sqrt{z}$"%st for st in [('','M'),('','V'),('z','H')]],loc="lower center")
 else:
     legend1=pylab.legend([l1,l2,l3],["$D_%s(z)/r_d\log(1+z)$"%st for st in ['A','V','H']],loc="lower center")
 
@@ -139,24 +134,9 @@ plot_errorbar(zMGS,      4.464,    yerr=0.168,               color ='blue', fmt=
 plot_errorbar(zSDSS1,    5.2493*rd_EHtoCAMB, yerr=rd_EHtoCAMB*0.0061/0.1905**2,color ='blue', fmt=fmt1, markersize=6, empty=empty1, alpha=alpha)
 plot_errorbar(zSDSS2,    1348./rd_fid_DR12, yerr=26./rd_fid_DR12 ,color ='blue', fmt=fmt1, markersize=6, label="$\\rm{SDSS\ DR7}$", empty=empty1, alpha=alpha)
 
-#plot_errorbar(zSDSS2,    fact*zSDSS2/84.9, yerr=fact*zSDSS2*7.0/84.9**2  ,color ='green', fmt=fmt1, markersize=8, empty=empty1, alpha=alpha)
-#plot_errorbar(zSDSS2,    1410./rd_fid_DR12, yerr=51./rd_fid_DR12 ,color ='red', fmt=fmt1, markersize=6, empty=empty1, alpha=alpha)
-
 plot_errorbar(zWiggleZ1, 1695./rd_fid_DR12 ,yerr=82./rd_fid_DR12 ,color ='blue', fmt=fmt2, markersize=6, label="$\\rm{WiggleZ}$", empty=empty1, alpha=alpha)
 plot_errorbar(zWiggleZ2, 2194./rd_fid_DR12 ,yerr=100./rd_fid_DR12 ,color ='blue', fmt=fmt2, markersize=6, empty=empty1, alpha=alpha)
 plot_errorbar(zWiggleZ3, 2486./rd_fid_DR12 ,yerr=85./rd_fid_DR12 ,color ='blue', fmt=fmt2, markersize=6, empty=empty1, alpha=alpha)
-
-
-if eboss:
-    plot_errorbar(zLOWZ,     8.467,              yerr=0.17,        color ='blue', fmt='v', markersize=8, label="$\\mathrm{LOWZ}$",empty=False)
-else:
-    pass	
-    #plot_errorbar(zLOWZ,     8.467,              yerr=0.17,        color ='blue', fmt='v', markersize=8, label="$\\mathrm{LOWZ}$",empty=False)
-
-
-#plot_errorbar(zCMASS, 9.519*(1+zCMASS), yerr=0.134*(1+zCMASS), color ='red', fmt='d', markersize=6,label="$\\mathrm{CMASS}$", empty=False)
-#plot_errorbar(zCMASS, 20.75*zCMASS,     yerr=0.73*zCMASS,      color ='green', fmt='-d', markersize=6,empty=False)
-
 
 
 plot_errorbar(zCombBAO1,  1512.4/rd_fid_DR12,     yerr=ersys(22.5, 11.0)/rd_fid_DR12,       
@@ -175,11 +155,13 @@ plot_errorbar(zCombBAO3,  fact*zCombBAO3/98.96,       yerr=fact*zCombBAO3*ersys(
 		color ='green', fmt='d', markersize=8, empty=empty2)
 
 
-plot_errorbar(zLyaA,  11.28*(1+zLyaA),  yerr=0.65*(1+ zLyaA),  color ='red', fmt='o', markersize=8,label="$\\rm{BOSS}\ \\mathrm{Ly}\\alpha\\mbox{-}\\rm{auto}\ \\rm{DR11}$", empty=empty2)
-plot_errorbar(zLyaA,  9.18*zLyaA,       yerr=0.28*zLyaA,       color ='green', fmt='-o', markersize=8,empty=empty2)
+plot_errorbar(zEBQSO,  3855/rd_fid_DR12, yerr=170/rd_fid_DR12,  color ='blue', fmt='v', markersize=8, label="$\\rm{eBOSS\ QSO}$", empty=empty2, alpha=alpha)
 
-plot_errorbar(zLyaC,  10.8*(1+zLyaC),   yerr=0.4*(1+zLyaC),    color ='red', fmt='*', markersize=8,label="$\\rm{BOSS}\ \\mathrm{Ly}\\alpha\\mbox{-}\\rm{cross}\ \\rm{DR9}$", empty=empty2)
-plot_errorbar(zLyaC,  9.0*zLyaC,        yerr=0.3*zLyaC,        color ='green', fmt='-*', markersize=8, empty=empty2)
+plot_errorbar(zLyaA,  37.77,  yerr=2.13,  color ='red', fmt='o', markersize=8,label="$\\rm{BOSS}\ \\mathrm{Ly}\\alpha\\mbox{-}\\rm{auto}\ \\rm{DR12}$", empty=empty2)
+plot_errorbar(zLyaA,  9.07*zLyaA,       yerr=0.31*zLyaA,       color ='green', fmt='-o', markersize=8,empty=empty2)
+
+plot_errorbar(zLyaC,  35.7,   yerr=1.5,    color ='red', fmt='*', markersize=8,label="$\\rm{BOSS}\ \\mathrm{Ly}\\alpha\\mbox{-}\\rm{cross}\ \\rm{DR12}$", empty=empty2)
+plot_errorbar(zLyaC,  9.01*zLyaC,        yerr=0.32*zLyaC,        color ='green', fmt='-*', markersize=8, empty=empty2)
 
 
 #Axis
@@ -198,32 +180,19 @@ if plaw>0:
     pylab.ylabel("${\\rm distance}/r_d\\sqrt{z}$")
     pylab.xlabel("$z$")
     pylab.tight_layout()
-    if (eboss):
-        pylab.legend(loc='lower center', numpoints=1,bbox_to_anchor = (0.4, 0.0))
-        pylab.ylim(3,30)
-        pylab.xlim(0.0,2.6)
-        pylab.savefig("Fig1_DR12_eboss.pdf")
-    else:
-        pylab.legend(loc='upper left', numpoints=1, frameon=True)
-        pylab.ylim(6,30)
-        pylab.xlim(0.08,3.0)
-        pylab.savefig("Fig1_DR12.pdf")
+    pylab.legend(loc='upper left', numpoints=1, frameon=False)
+    pylab.ylim(6,32)
+    pylab.xlim(0.08,3.0)
+    pylab.savefig("Fig1_DR14.pdf")
 
 else:
     pylab.legend(loc='lower left', numpoints=1)
     pylab.ylabel("$D(z)/r_d \log(1+z)$")
-    if eboss:
-        pylab.ylim(12,35)
-        pylab.xlim(0.0,2.5)
-    else:
-        pylab.ylim(15,35)
-        pylab.xlim(0.08,3.0)
+    pylab.ylim(15,35)
+    pylab.xlim(0.08,3.0)
     pylab.xlabel("$z$")
     pylab.tight_layout()
-    if (eboss):
-        pylab.savefig("Fig1_DR12_v2_eboss.pdf")
-    else:
-        pylab.savefig("Fig1_DR12_v2.pdf")
+    pylab.savefig("Fig1_DR14_v2.pdf")
 
 
 #pylab.show()
