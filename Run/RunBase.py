@@ -36,7 +36,7 @@ from LikelihoodMultiplier import *
 #Analyzers
 from MaxLikeAnalyzer import *
 from MCMCAnalyzer import *
-
+from CosmoMCImportanceSampler import *
 
 ## String parser Aux routines
 model_list="LCDOM, LCDMasslessnu, nuLCDM, NeffLCDM, noradLCDM, nuoLCDM, nuwLCDM, oLCDM, wCDM, waCDM, owCDM,"\
