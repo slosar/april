@@ -15,6 +15,7 @@ class DR11LOWZ(GaussBAODVLikelihood):
         fidTheory=LCDMCosmology(obh2,Om,h,mnu)
         GaussBAODVLikelihood.__init__(self,"DR11LOWZ",0.32,1264.0,25.0, fidTheory)
 
+        
 class DR11CMASS(TabulatedBAOLikelihood):
     def __init__(self):
         ## fiducial cosmology for LOWZ/CMASS data.

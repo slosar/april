@@ -77,7 +77,6 @@ class cosmochain:
             self.parcol[n]=i+2
         print "Got ",len(self.paramnames), "parameters."
         data=[]
-
         for fname in flist:
             print "Reading", fname,"...",
             if (kirkby):

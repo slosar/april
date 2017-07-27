@@ -22,6 +22,9 @@ class BaseLikelihood:
     def updateParams(self,params):
         return self.theory_.updateParams(params)
 
+    def loglike(self):
+        return 0.0
+
     def theory_loglike_prior():
         return self.theory_.prior_loglike()
 
