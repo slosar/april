@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from RunBase import *
+import numpy.lib.recfunctions as recfunctions
 
 class DR12Isotropic(CompositeLikelihood):
     ## See 1607.03155
@@ -22,6 +23,100 @@ def getAlpha(z,i):
     alpha,_,_,p2,m2,_=map(float,open('DRMock/result_2_60_BAOfit2D_patchy_win_z%i_postrecon_iso_binsize2_%i.dat'%(z,i)).readlines()[15].split())
     return alpha, (p2+m2)/2/2  ## return 1 sigma average
 
+
+class TwoNeffImportanceSampler(CosmoMCImportanceSampler):
+    def __init__ (self, inroot, outroot, like):
+        #CosmoMCImportanceSampler.__init__(self,inroot,outroot,like)
+        self.dtype=[]
+        self.dtype.append(('weight','f8'))
+        self.dtype.append(('nloglike','f8'))
+        op=open(outroot+".paramnames",'w')
+        for line in open(inroot+".paramnames").readlines():
+            op.write(line)
+            name=line.split()[0]
+            self.dtype.append((name,'f8'))
+        op.write("NnuLSS\n")
+        op.close()
+        self.inroot=inroot
+        self.outroot=outroot
+        self.ofset=None
+        self.names=[d[0] for d in self.dtype]
+        self.like=like
+
+
+    def thetaOfh(self,h):
+        self.like.updateParams([Parameter("h",h)])#thetap/thetao)])
+        return self.like.theory().CMBSimpleVec()[2]
+    
+    def importanceSample(self,fname,ofname):
+        chain=np.loadtxt(fname,dtype=self.dtype)
+        ## generate Neff 
+        ##
+        N=len(chain)
+        chain=recfunctions.append_fields(chain,'nnuLSS',np.random.uniform(1,5,N),
+                                                 usemask=False)
+
+        llike=[]
+        for i,line in enumerate(chain):
+            if i%1000==0:
+                print "%i/%i..."%(i,N)
+            if True:
+                self.like.updateParams (self.cosmomc2april(line,True))
+            else:
+                self.like.updateParams (self.cosmomc2april(line,False))
+                h=self.like.theory().h
+                thetao=self.thetaOfh(h)
+                self.like.updateParams (self.cosmomc2april(line,True))
+                thetap=self.thetaOfh(h)
+                if thetap>thetao:
+                    hlow=h
+                    hhigh=h*1.4
+                else:
+                    hlow=h*0.6
+                    hhigh=h
+
+                while True:
+                    hmid=(hlow+hhigh)/2
+                    thetam=self.thetaOfh(hmid)
+                    if abs(thetam/thetao-1)<1e-4:
+                        break
+                    if thetam>thetao:
+                        hlow=hmid
+                    else:
+                        hhigh=hmid
+            # found my h
+            llike.append(self.like.loglike())
+        llike=np.array(llike)
+        if self.ofset is None:
+            self.ofset=llike.max()
+        rewe=np.exp(llike-self.ofset)
+        chain['weight']*=rewe
+        print "min/mean/max weight=",rewe.min(), rewe.mean(), rewe.max()
+        np.savetxt(ofname,chain)
+
+        
+    def cosmomc2april(self,line,NeffLSS=False):
+        plist=[Parameter("Obh2",line['omegabh2']),
+               Parameter("Om",line['omegam*']),
+               Parameter("h",line['H0*']/100.)]
+        if "nnu" in self.names:
+            if NeffLSS:
+                plist.append(Parameter("Nnu",line['nnuLSS']))
+            else:
+                plist.append(Parameter("Nnu",line['nnu']))
+        if "w" in self.names:
+            plist.append(Parameter("w",line['w']))
+        if "wa" in self.names:
+            plist.append(Parameter("wa",line['wa']))
+        if "omegak" in self.names:
+            plist.append(Parameter("Ok",line['omegak']))
+        if "mnu" in self.names:
+            plist.append(Parameter("mnu",line['mnu']))
+        return plist
+
+
+
+
 def dochain(num):
         
     T=ParseModel("NeffLCDM")
@@ -33,16 +128,25 @@ def dochain(num):
     L.setTheory(T)
     if num/9==0:
         inroot="plikHM_TT_lowTEB"
-    else:
+        droot=inroot
+    elif num/9==1:
         inroot="plikHM_TTTEEE_lowTEB"
-    s=CosmoMCImportanceSampler("/data/anze/Planck/base_nnu/%s/base_nnu_%s"%(inroot,inroot),
-                           "isamp/%s_patchy%i"%(inroot,n),L)
+        droot=inroot
+    elif num/9==2:
+        inroot="plikHM_TTTEEE_lowTEB_post_lensing"
+        droot="plikHM_TTTEEE_lowTEB"
+    #s=CosmoMCImportanceSampler("/data/anze/Planck/base_nnu/%s/base_nnu_%s"%(droot,inroot),
+    #                       "isamp/%s_patchy%i"%(inroot,n),L)
+    s=TwoNeffImportanceSampler("/data/anze/Planck/base_nnu/%s/base_nnu_%s"%(droot,inroot),
+                           "isamp_2N_d/%s_patchy%i"%(inroot,n),L)
+
     s.run()
 
 
+#dochain(0)
 from multiprocessing import Pool
 pool = Pool(processes=4)              
-pool.map(dochain, range(18))
+pool.map(dochain, range(27)) #just do the last one
 
 
 
