@@ -60,7 +60,7 @@ class TwoNeffImportanceSampler(CosmoMCImportanceSampler):
         for i,line in enumerate(chain):
             if i%1000==0:
                 print "%i/%i..."%(i,N)
-            if True:
+            if not fix_theta:
                 self.like.updateParams (self.cosmomc2april(line,True))
             else:
                 self.like.updateParams (self.cosmomc2april(line,False))
@@ -120,11 +120,21 @@ class TwoNeffImportanceSampler(CosmoMCImportanceSampler):
 def dochain(num):
         
     T=ParseModel("NeffLCDM")
+    doData=False
+    if num>=100:
+        num-=100
+        doData=True
+
     n=num%9+1
-    a1,ae1=getAlpha(1,n)
-    a2,ae2=getAlpha(3,n)
-    print a1,ae1,a2,ae2
-    L=DR12Isotropic(a1,ae1,a2,ae2,"TEST%i"%num)
+    if doData:
+        a1,ae1=1.000,0.010
+        a2,ae2=0.9887,0.0087
+        L=DR12Isotropic(a1,ae1,a2,ae2,"DATA")
+    else:
+        a1,ae1=getAlpha(1,n)
+        a2,ae2=getAlpha(3,n)
+        print a1,ae1,a2,ae2
+        L=DR12Isotropic(a1,ae1,a2,ae2,"TEST%i"%num)
     L.setTheory(T)
     if num/9==0:
         inroot="plikHM_TT_lowTEB"
@@ -135,18 +145,44 @@ def dochain(num):
     elif num/9==2:
         inroot="plikHM_TTTEEE_lowTEB_post_lensing"
         droot="plikHM_TTTEEE_lowTEB"
-    #s=CosmoMCImportanceSampler("/data/anze/Planck/base_nnu/%s/base_nnu_%s"%(droot,inroot),
-    #                       "isamp/%s_patchy%i"%(inroot,n),L)
-    s=TwoNeffImportanceSampler("/data/anze/Planck/base_nnu/%s/base_nnu_%s"%(droot,inroot),
-                           "isamp_2N_d/%s_patchy%i"%(inroot,n),L)
+    if doData:
+        if not twoN:
+            s=CosmoMCImportanceSampler("/data/anze/Planck/base_nnu/%s/base_nnu_%s"%(droot,inroot),
+                               "isamp/%s_data"%(inroot),L)
+        else:
+            if fix_theta:
+                s=TwoNeffImportanceSampler("/data/anze/Planck/base_nnu/%s/base_nnu_%s"%(droot,inroot),
+                                           "isamp_2N_d/%s_data"%(inroot),L)
+            else:
+                s=TwoNeffImportanceSampler("/data/anze/Planck/base_nnu/%s/base_nnu_%s"%(droot,inroot),
+                                           "isamp_2N/%s_data"%(inroot),L)
 
+    else:
+        if not twoN:
+            s=CosmoMCImportanceSampler("/data/anze/Planck/base_nnu/%s/base_nnu_%s"%(droot,inroot),
+                               "isamp/%s_patchy%i"%(inroot,n),L)
+        else:
+            if fix_theta:
+                s=TwoNeffImportanceSampler("/data/anze/Planck/base_nnu/%s/base_nnu_%s"%(droot,inroot),
+                                       "isamp_2N_d/%s_patchy%i"%(inroot,n),L)
+            else:
+                s=TwoNeffImportanceSampler("/data/anze/Planck/base_nnu/%s/base_nnu_%s"%(droot,inroot),
+                                           "isamp_2N/%s_patchy%i"%(inroot,n),L)
+
+                
     s.run()
 
 
-#dochain(0)
+#dochain(100)
 from multiprocessing import Pool
 pool = Pool(processes=4)              
-pool.map(dochain, range(27)) #just do the last one
+twoN=False
+fix_theta=False
+dosims=False:
+if dosims:
+    pool.map(dochain, range(27))
+else:
+    pool.map(dochain, [100,109,118]) 
 
 
 
