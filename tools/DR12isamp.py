@@ -25,7 +25,7 @@ def getAlpha(z,i):
 
 
 class TwoNeffImportanceSampler(CosmoMCImportanceSampler):
-    def __init__ (self, inroot, outroot, like):
+    def __init__ (self, inroot, outroot, like, fix_theta):
         #CosmoMCImportanceSampler.__init__(self,inroot,outroot,like)
         self.dtype=[]
         self.dtype.append(('weight','f8'))
@@ -42,7 +42,7 @@ class TwoNeffImportanceSampler(CosmoMCImportanceSampler):
         self.ofset=None
         self.names=[d[0] for d in self.dtype]
         self.like=like
-
+        self.fix_theta=fix_theta
 
     def thetaOfh(self,h):
         self.like.updateParams([Parameter("h",h)])#thetap/thetao)])
@@ -60,7 +60,7 @@ class TwoNeffImportanceSampler(CosmoMCImportanceSampler):
         for i,line in enumerate(chain):
             if i%1000==0:
                 print "%i/%i..."%(i,N)
-            if not fix_theta:
+            if not self.fix_theta:
                 self.like.updateParams (self.cosmomc2april(line,True))
             else:
                 self.like.updateParams (self.cosmomc2april(line,False))
@@ -117,8 +117,9 @@ class TwoNeffImportanceSampler(CosmoMCImportanceSampler):
 
 
 
-def dochain(num):
-        
+def dochain(arg):
+    num,doData,twoN,ftheta=arg
+    print arg
     T=ParseModel("NeffLCDM")
     doData=False
     if num>=100:
@@ -148,26 +149,26 @@ def dochain(num):
     if doData:
         if not twoN:
             s=CosmoMCImportanceSampler("/data/anze/Planck/base_nnu/%s/base_nnu_%s"%(droot,inroot),
-                               "isamp/%s_data"%(inroot),L)
+                                       "isamp/%s_data"%(inroot),L)
         else:
-            if fix_theta:
+            if ftheta:
                 s=TwoNeffImportanceSampler("/data/anze/Planck/base_nnu/%s/base_nnu_%s"%(droot,inroot),
-                                           "isamp_2N_d/%s_data"%(inroot),L)
+                                           "isamp_2N_ft/%s_data"%(inroot),L,ftheta)
             else:
                 s=TwoNeffImportanceSampler("/data/anze/Planck/base_nnu/%s/base_nnu_%s"%(droot,inroot),
-                                           "isamp_2N/%s_data"%(inroot),L)
+                                           "isamp_2N_fh/%s_data"%(inroot),L,ftheta)
 
     else:
         if not twoN:
             s=CosmoMCImportanceSampler("/data/anze/Planck/base_nnu/%s/base_nnu_%s"%(droot,inroot),
-                               "isamp/%s_patchy%i"%(inroot,n),L)
+                                       "isamp/%s_patchy%i"%(inroot,n),L)
         else:
-            if fix_theta:
+            if ftheta:
                 s=TwoNeffImportanceSampler("/data/anze/Planck/base_nnu/%s/base_nnu_%s"%(droot,inroot),
-                                       "isamp_2N_d/%s_patchy%i"%(inroot,n),L)
+                                           "isamp_2N_ft/%s_patchy%i"%(inroot,n),L,ftheta)
             else:
                 s=TwoNeffImportanceSampler("/data/anze/Planck/base_nnu/%s/base_nnu_%s"%(droot,inroot),
-                                           "isamp_2N/%s_patchy%i"%(inroot,n),L)
+                                           "isamp_2N_fh/%s_patchy%i"%(inroot,n),L,ftheta)
 
                 
     s.run()
@@ -176,13 +177,24 @@ def dochain(num):
 #dochain(100)
 from multiprocessing import Pool
 pool = Pool(processes=4)              
-twoN=False
-fix_theta=False
-dosims=False:
-if dosims:
-    pool.map(dochain, range(27))
-else:
-    pool.map(dochain, [100,109,118]) 
+twoN=True
+fix_theta=True
+process_sims=True
+process_data=True
+todo=[]
+
+if process_sims:
+    for i in range(27):
+        todo.append((i,False,twoN,fix_theta))
+if process_data:
+    for i in [100,109,118]:
+        todo.append((i,True,twoN,fix_theta))
+
+#for line in todo:
+#    dochain(line)
+    
+pool.map(dochain, todo)
+
 
 
 
