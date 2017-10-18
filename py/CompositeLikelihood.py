@@ -16,6 +16,10 @@ class CompositeLikelihood (BaseLikelihood):
             l.setTheory(theory)
             assert(self.theory_ is l.theory_)
 
+    def FudgeDataToTheory(self):
+        for L in self.llist_:
+            L.FudgeDataToTheory()
+
     def addLikelihood (self,like):
         self.llist_.append(like)
         if hasattr(self, 'theory_'):

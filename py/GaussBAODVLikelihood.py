@@ -28,5 +28,8 @@ class GaussBAODVLikelihood (BaseLikelihood):
         chi2=min(self.maxchi2,(DVT-self.DV)**2/(self.DVErr2))
         return -chi2/2.0
 
-
+    def FudgeDataToTheory(self):
+        DVT=self.theory_.DVOverrd(self.z)
+        self.DV=DVT
+        
     

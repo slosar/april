@@ -34,6 +34,9 @@ class SimpleCMB (BaseLikelihood):
         delt=self.theory_.CMBSimpleVec()-self.mean
         return -dot(delt,dot(self.icov,delt))/2.0
 
+    def FudgeDataToTheory(self):
+        self.mean=self.theory_.CMBSimpleVec()
+        
     
 
 class PlanckLikelihood(SimpleCMB):

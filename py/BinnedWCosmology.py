@@ -26,8 +26,8 @@ class BinnedWCosmology(LCDMCosmology):
             return False
         gotone=False
         for p in pars:
-            i=self.pnames.index(p.name)
-            if i>0:
+            if p.name in self.pnames:
+                i=self.pnames.index(p.name)
                 self.wvals[i]=p.value
                 gotone=True
         if gotone:
@@ -40,9 +40,7 @@ class BinnedWCosmology(LCDMCosmology):
         itg=interp1d(np.log(abins),3*(1+w))
         oabins=np.hstack((np.logspace(-4,-1,10),np.linspace(0.1,1,100)))
         olnrho=[quad(itg,np.log(a),0)[0] for a in oabins]
-        print 1/oabins**4
-        print np.exp(olnrho)
-        self.DEomega=interp1d(oabins,np.exp(olnrho))
+        self.DEomega=interp1d(oabins,olnrho)
                         
         
     
@@ -50,6 +48,6 @@ class BinnedWCosmology(LCDMCosmology):
     ## i.e. H(z)^2/H(z=0)^2
     def RHSquared_a(self,a):
         NuContrib=self.NuDensity.rho(a)/self.h**2
-        return (self.Ocb/a**3+self.Omrad/a**4+NuContrib+(1.0-self.Om)*self.DEomega(a))
+        return (self.Ocb/a**3+self.Omrad/a**4+NuContrib+(1.0-self.Om)*np.exp(self.DEomega(a)))
 
 
