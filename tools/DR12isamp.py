@@ -25,7 +25,7 @@ def getAlpha(z,i):
 
 
 class TwoNeffImportanceSampler(CosmoMCImportanceSampler):
-    def __init__ (self, inroot, outroot, like, fix_theta):
+    def __init__ (self, inroot, outroot, like, fix_theta, fix_aeq):
         #CosmoMCImportanceSampler.__init__(self,inroot,outroot,like)
         self.dtype=[]
         self.dtype.append(('weight','f8'))
@@ -43,7 +43,11 @@ class TwoNeffImportanceSampler(CosmoMCImportanceSampler):
         self.names=[d[0] for d in self.dtype]
         self.like=like
         self.fix_theta=fix_theta
-
+        self.fix_aeq=fix_aeq
+        if (self.fix_theta and self.fix_aeq):
+            print "FUCK YOU!"
+            stop()
+        
     def thetaOfh(self,h):
         self.like.updateParams([Parameter("h",h)])#thetap/thetao)])
         return self.like.theory().CMBSimpleVec()[2]
@@ -60,8 +64,26 @@ class TwoNeffImportanceSampler(CosmoMCImportanceSampler):
         for i,line in enumerate(chain):
             if i%1000==0:
                 print "%i/%i..."%(i,N)
-            if not self.fix_theta:
+            if (not self.fix_theta) and (not self.fix_aeq):
                 self.like.updateParams (self.cosmomc2april(line,True))
+            elif self.fix_aeq:
+                self.like.updateParams (self.cosmomc2april(line,True))
+                T=self.like.theory()
+                ## hack
+                #print T.h, T.Ocb,
+                self.like.updateParams([Parameter("h",np.random.uniform(0.4,1.1))])
+                omegacb=T.Ocb*T.h**2
+                Omegax=T.Om-T.Ocb
+                NeffLSS=line['nnuLSS']
+                NeffCMB=line['nnu']
+                ad= (8/7.) *(11./4.)**(4./3.) 
+                omegacbnew = (ad+NeffLSS)/(ad+NeffCMB) * (omegacb)
+                Omegacbnew=omegacbnew/T.h**2
+                Omegamnew = Omegacbnew+Omegax
+                self.like.updateParams([Parameter("Om",Omegamnew)])
+                #print T.h, T.Ocb
+                
+
             else:
                 self.like.updateParams (self.cosmomc2april(line,False))
                 h=self.like.theory().h
@@ -118,7 +140,7 @@ class TwoNeffImportanceSampler(CosmoMCImportanceSampler):
 
 
 def dochain(arg):
-    num,doData,twoN,ftheta=arg
+    num,doData,twoN,ftheta,faeq=arg
     print arg
     T=ParseModel("NeffLCDM")
     doData=False
@@ -146,31 +168,28 @@ def dochain(arg):
     elif num/9==2:
         inroot="plikHM_TTTEEE_lowTEB_post_lensing"
         droot="plikHM_TTTEEE_lowTEB"
+
+    fixstr="fh"
+    if ftheta:
+        fixstr="ft"
+    if faeq:
+        fixstr="fax"
+        
     if doData:
         if not twoN:
             s=CosmoMCImportanceSampler("/data/anze/Planck/base_nnu/%s/base_nnu_%s"%(droot,inroot),
                                        "isamp/%s_data"%(inroot),L)
         else:
-            if ftheta:
-                s=TwoNeffImportanceSampler("/data/anze/Planck/base_nnu/%s/base_nnu_%s"%(droot,inroot),
-                                           "isamp_2N_ft/%s_data"%(inroot),L,ftheta)
-            else:
-                s=TwoNeffImportanceSampler("/data/anze/Planck/base_nnu/%s/base_nnu_%s"%(droot,inroot),
-                                           "isamp_2N_fh/%s_data"%(inroot),L,ftheta)
-
+            s=TwoNeffImportanceSampler("/data/anze/Planck/base_nnu/%s/base_nnu_%s"%(droot,inroot),
+                                       "isamp_2N_%s/%s_data"%(fixstr,inroot),L,ftheta,faeq)
     else:
         if not twoN:
             s=CosmoMCImportanceSampler("/data/anze/Planck/base_nnu/%s/base_nnu_%s"%(droot,inroot),
                                        "isamp/%s_patchy%i"%(inroot,n),L)
         else:
-            if ftheta:
-                s=TwoNeffImportanceSampler("/data/anze/Planck/base_nnu/%s/base_nnu_%s"%(droot,inroot),
-                                           "isamp_2N_ft/%s_patchy%i"%(inroot,n),L,ftheta)
-            else:
-                s=TwoNeffImportanceSampler("/data/anze/Planck/base_nnu/%s/base_nnu_%s"%(droot,inroot),
-                                           "isamp_2N_fh/%s_patchy%i"%(inroot,n),L,ftheta)
+            s=TwoNeffImportanceSampler("/data/anze/Planck/base_nnu/%s/base_nnu_%s"%(droot,inroot),
+                                           "isamp_2N_%s/%s_patchy%i"%(fixstr,inroot,n),L,ftheta,faeq)
 
-                
     s.run()
 
 
@@ -178,17 +197,18 @@ def dochain(arg):
 from multiprocessing import Pool
 pool = Pool(processes=4)              
 twoN=True
-fix_theta=True
+fix_theta=False
+fix_aeq=True
 process_sims=True
 process_data=True
 todo=[]
 
 if process_sims:
     for i in range(27):
-        todo.append((i,False,twoN,fix_theta))
+        todo.append((i,False,twoN,fix_theta,fix_aeq))
 if process_data:
     for i in [100,109,118]:
-        todo.append((i,True,twoN,fix_theta))
+        todo.append((i,True,twoN,fix_theta,fix_aeq))
 
 #for line in todo:
 #    dochain(line)
