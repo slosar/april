@@ -71,7 +71,7 @@ class TwoNeffImportanceSampler(CosmoMCImportanceSampler):
                 T=self.like.theory()
                 ## hack
                 #print T.h, T.Ocb,
-                self.like.updateParams([Parameter("h",np.random.uniform(0.4,1.1))])
+                self.like.updateParams([Parameter("h",np.random.uniform(0.2,1.5))])
                 omegacb=T.Ocb*T.h**2
                 Omegax=T.Om-T.Ocb
                 NeffLSS=line['nnuLSS']
