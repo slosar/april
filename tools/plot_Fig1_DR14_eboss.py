@@ -113,6 +113,11 @@ def plot_errorbar(z,val, yerr=0, color=0, fmt=0, markersize=0,label=None, empty=
             pylab.plot ([],[],fmt,color='black',label=label,markersize=markersize,markerfacecolor=mfc)
         else:
             pylab.plot ([],[],fmt,color='black',label=label,markersize=markersize)
+    elif label<0:
+        if (mfc=='white'):
+            return pylab.plot ([],[],fmt,color='black',markersize=markersize,markerfacecolor=mfc)
+        else:
+            return pylab.plot ([],[],fmt,color='black',markersize=markersize)
 
 
 fmt1 = '^'
@@ -159,24 +164,33 @@ plot_errorbar(zLyaA,  9.07*zLyaA,       yerr=0.31*zLyaA,       color ='green', f
 plot_errorbar(zLyaC,  35.7,   yerr=1.5,    color ='red', fmt='+', markersize=8,label="$\\rm{BOSS}\ \\mathrm{Ly}\\alpha\\mbox{-}\\rm{cross}\ \\rm{DR12}$", empty=empty2)
 plot_errorbar(zLyaC,  9.01*zLyaC,        yerr=0.32*zLyaC,        color ='green', fmt='-+', markersize=8, empty=empty2)
 
+
+plot_errorbar(0.81,  1.81*10.75,   yerr=0.43,    color ='red', fmt='x', markersize=8,label="$\\rm{DES} Y1$", empty=empty2)
+
 plot_errorbar(0.72,  2353/rd_fid_DR14_LRG, yerr=62/rd_fid_DR12,  color ='blue', fmt='s', markersize=8, label="$\\rm{eBOSS\ LRG\ DR14}$", empty=False, alpha=alpha)
 plot_errorbar(1.52,  3843/rd_fid_DR12, yerr=147/rd_fid_DR12,  color ='blue', fmt='d', markersize=8, label="$\\rm{eBOSS\ QSO\ DR14}$", empty=False, alpha=alpha)
 
 print rd_fid_DR14_LRG,rd_fid_DR12
 
+
+futleg=[]
+futlegtext=[]
 def plotFutureErrorbar (z,dae,he,label,fmt,markersize=8):
     da=T.DaOverrd(z)
     hi=T.HIOverrd(z)*z
-    plot_errorbar(z,  da,   yerr=da*dae,    color ='red', fmt=fmt, markersize=markersize,label=label, empty=False)
+    l=plot_errorbar(z,  da,   yerr=da*dae,    color ='red', label=-1, fmt=fmt, markersize=markersize, empty=False)
     plot_errorbar(z,  hi,        yerr=hi*he,        color ='green', fmt=fmt, markersize=markersize, empty=False)
+    futleg.append(l[0])
+    futlegtext.append(label)
 
-
-
-plotFutureErrorbar(0.8,0.019,0.029,"$\\rm{eBOSS\ LRG\ final}$",'v')
+plotFutureErrorbar(0.77,0.019,0.029,"$\\rm{eBOSS\ LRG\ final}$",'v')
 plotFutureErrorbar(1.5,0.033,0.049,"$\\rm{eBOSS\ QSO\ final}$",'^')
 plotFutureErrorbar(2.45,0.024,0.018,"$\\rm{eBOSS\ Ly}\\alpha\  \\rm{final}$",'o')
 plotFutureErrorbar(0.9,0.031,0.047,"$\\rm{eBOSS\ ELG\ final}$",'*')
-                
+
+print futleg
+legend1 = pylab.legend(futleg, futlegtext, loc=(+0.3,0.755),numpoints=1, fontsize=13, frameon=False)
+pylab.gca().add_artist(legend1)
 
 #Axis
 ax.xaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
@@ -194,7 +208,7 @@ if plaw>0:
     pylab.ylabel("${\\rm distance}/r_d\\sqrt{z}$")
     pylab.xlabel("$z$")
     pylab.tight_layout()
-    pylab.legend(loc=(+0,0.32), numpoints=1, frameon=False, fontsize=13)
+    pylab.legend(loc=(+0,0.42), numpoints=1, frameon=False, fontsize=13)
     pylab.ylim(6,32)
     pylab.xlim(0.1,2.7)
     pylab.savefig("Fig1_DR14_eboss_Feb18.pdf")
