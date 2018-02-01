@@ -52,11 +52,11 @@ zCombBAO1 = 0.38
 zCombBAO2 = 0.51
 zCombBAO3 = 0.61
 
-zEBQSO=1.52
-
 
 rd_EHtoCAMB =153.19/149.28
 rd_fid_DR12 = 147.78
+rd_fid_DR14_LRG = rd_cuesta_approx(0.0220,0.1190+0.0220,0.0006,3.04)
+
 rd_fid_DR7  = 151.84  
 
 zl=arange(0,4,0.01)
@@ -159,9 +159,10 @@ plot_errorbar(zLyaA,  9.07*zLyaA,       yerr=0.31*zLyaA,       color ='green', f
 plot_errorbar(zLyaC,  35.7,   yerr=1.5,    color ='red', fmt='+', markersize=8,label="$\\rm{BOSS}\ \\mathrm{Ly}\\alpha\\mbox{-}\\rm{cross}\ \\rm{DR12}$", empty=empty2)
 plot_errorbar(zLyaC,  9.01*zLyaC,        yerr=0.32*zLyaC,        color ='green', fmt='-+', markersize=8, empty=empty2)
 
-plot_errorbar(zEBQSO,  3855/rd_fid_DR12, yerr=170/rd_fid_DR12,  color ='blue', fmt='v', markersize=8, label="$\\rm{eBOSS\ QSO\ current}$", empty=False, alpha=alpha)
+plot_errorbar(0.72,  2353/rd_fid_DR14_LRG, yerr=62/rd_fid_DR12,  color ='blue', fmt='s', markersize=8, label="$\\rm{eBOSS\ LRG\ DR14}$", empty=False, alpha=alpha)
+plot_errorbar(1.52,  3843/rd_fid_DR12, yerr=147/rd_fid_DR12,  color ='blue', fmt='d', markersize=8, label="$\\rm{eBOSS\ QSO\ DR14}$", empty=False, alpha=alpha)
 
-
+print rd_fid_DR14_LRG,rd_fid_DR12
 
 def plotFutureErrorbar (z,dae,he,label,fmt,markersize=8):
     da=T.DaOverrd(z)
@@ -171,10 +172,10 @@ def plotFutureErrorbar (z,dae,he,label,fmt,markersize=8):
 
 
 
-plotFutureErrorbar(0.8,0.012,0.021,"$\\rm{eBOSS\ LRG\ Yr6}$",'d')
-plotFutureErrorbar(1.5,0.028,0.042,"$\\rm{eBOSS\ QSO\ Yr6}$",'v')
-plotFutureErrorbar(2.45,0.014,0.017,"$\\rm{eBOSS\ Ly}\\alpha\  \\rm{Yr6}$",'o')
-plotFutureErrorbar(0.9,0.031,0.047,"$\\rm{eBOSS\ ELG\ Yr6}$",'*')
+plotFutureErrorbar(0.8,0.019,0.029,"$\\rm{eBOSS\ LRG\ final}$",'v')
+plotFutureErrorbar(1.5,0.033,0.049,"$\\rm{eBOSS\ QSO\ final}$",'^')
+plotFutureErrorbar(2.45,0.024,0.018,"$\\rm{eBOSS\ Ly}\\alpha\  \\rm{final}$",'o')
+plotFutureErrorbar(0.9,0.031,0.047,"$\\rm{eBOSS\ ELG\ final}$",'*')
                 
 
 #Axis
@@ -195,8 +196,8 @@ if plaw>0:
     pylab.tight_layout()
     pylab.legend(loc=(+0,0.32), numpoints=1, frameon=False, fontsize=13)
     pylab.ylim(6,32)
-    pylab.xlim(0.1,2.5)
-    pylab.savefig("Fig1_DR14_eboss.pdf")
+    pylab.xlim(0.1,2.7)
+    pylab.savefig("Fig1_DR14_eboss_Feb18.pdf")
 
 else:
     pylab.legend(loc='lower left', numpoints=1)
