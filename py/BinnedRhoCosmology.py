@@ -5,11 +5,13 @@ import numpy as np
 from scipy.interpolate import interp1d
 from scipy.integrate import quad
 
+
 class BinnedRhoCosmology(LCDMCosmology):
-    def __init__(self, dz=0.2, zmax=1.0):
+    def __init__(self, dz=0.2, zmax=1.0,zbinpow=1.4):
         ## two parameters: Om and h
-        self.zbins=np.arange(dz,zmax,dz)
-        self.Nb=len(self.zbins)
+        self.srzbins=np.arange(dz**(1./zbinpow),zmax**(1./zbinpow),dz**(1./zbinpow))
+        self.zbinpow=zbinpow
+        self.Nb=len(self.srzbins)
         self.rhovals=np.zeros(self.Nb)
         self.pnames=["r%i"%(i+1) for i in range(self.Nb)]
         LCDMCosmology.__init__(self)
@@ -35,7 +37,7 @@ class BinnedRhoCosmology(LCDMCosmology):
         return True
 
     def integrateOmega(self):
-        abins=np.hstack(([1.0],1./(1+self.zbins),[1e-4]))
+        abins=np.hstack(([1.0],1./(1+self.srzbins**self.zbinpow),[1e-4]))
         r=np.hstack(([0.0],self.rhovals,[self.rhovals[-1]]))
         self.acut=0.5*(abins[:-1]+abins[1:])
         self.zcut=1./self.acut-1
