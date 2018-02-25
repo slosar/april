@@ -129,7 +129,7 @@ alpha= 1.0
 fact = (300000./rd_fid_DR12)
 
 #666/148.651,    yerr=25/148.651
-plot_errorbar(z6dFGS,    2.97*rd_EHtoCAMB,   yerr=rd_EHtoCAMB*0.015/0.336**2,  color ='blue', fmt='o', markersize=6, label="current\ generation", empty=False,alpha=alpha)
+plot_errorbar(z6dFGS,    2.97*rd_EHtoCAMB,   yerr=rd_EHtoCAMB*0.015/0.336**2,  color ='blue', fmt='o', markersize=6, label="current\ generation", empty=True,alpha=alpha)
 plot_errorbar(zMGS,      4.464,    yerr=0.168,               color ='blue', fmt='o', markersize=6, alpha=alpha)
 plot_errorbar(zSDSS1,    5.2493*rd_EHtoCAMB, yerr=rd_EHtoCAMB*0.0061/0.1905**2,color ='blue', fmt='o', markersize=6, alpha=alpha)
 plot_errorbar(zSDSS2,    1348./rd_fid_DR12, yerr=26./rd_fid_DR12 ,color ='blue', fmt='o', markersize=6, alpha=alpha)
@@ -137,22 +137,22 @@ plot_errorbar(zWiggleZ1, 1695./rd_fid_DR12 ,yerr=82./rd_fid_DR12 ,color ='blue',
 plot_errorbar(zWiggleZ2, 2194./rd_fid_DR12 ,yerr=100./rd_fid_DR12 ,color ='blue', fmt='o', markersize=6,  alpha=alpha)
 plot_errorbar(zWiggleZ3, 2486./rd_fid_DR12 ,yerr=85./rd_fid_DR12 ,color ='blue', fmt='o', markersize=6,  alpha=alpha)
 plot_errorbar(zCombBAO1,  1512.4/rd_fid_DR12,     yerr=ersys(22.5, 11.0)/rd_fid_DR12,       
-		color ='red', fmt='o', markersize=6)
+		color ='blue', fmt='o', markersize=6)
 plot_errorbar(zCombBAO2,  1975.2/rd_fid_DR12,     yerr=ersys(26.6, 14.1)/rd_fid_DR12,
-		color ='red', fmt='o', markersize=6)
+		color ='blue', fmt='o', markersize=6)
 plot_errorbar(zCombBAO3,  2306.7/rd_fid_DR12,  	 yerr=ersys(33.2, 16.7)/rd_fid_DR12, 
-		color ='red', fmt='o', markersize=6)
+		color ='blue', fmt='o', markersize=6)
 plot_errorbar(zCombBAO1,  fact*zCombBAO1/81.21,       yerr=fact*zCombBAO1*ersys(2.17, 0.97)/(81.21)**2,  
-		color ='green', fmt='o', markersize=6)
+		color ='blue', fmt='o', markersize=6)
 plot_errorbar(zCombBAO2,  fact*zCombBAO2/90.90,       yerr=fact*zCombBAO2*ersys(2.07, 1.08)/(90.90)**2,    
-		color ='green', fmt='o', markersize=6)
+		color ='blue', fmt='o', markersize=6)
 plot_errorbar(zCombBAO3,  fact*zCombBAO3/98.96,       yerr=fact*zCombBAO3*ersys(2.21, 1.18)/(98.96)**2, 
-		color ='green', fmt='o', markersize=6)
+		color ='blue', fmt='o', markersize=6)
 plot_errorbar(zEBQSO,  3855/rd_fid_DR12, yerr=170/rd_fid_DR12,  color ='blue', fmt='o', markersize=6, alpha=alpha)
-plot_errorbar(zLyaA,  37.77,  yerr=2.13,  color ='red', fmt='o', markersize=6)
-plot_errorbar(zLyaA,  9.07*zLyaA,       yerr=0.31*zLyaA,       color ='green', fmt='o', markersize=6)
-plot_errorbar(zLyaC,  35.7,   yerr=1.5,    color ='red', fmt='o', markersize=6)
-plot_errorbar(zLyaC,  9.01*zLyaC,        yerr=0.32*zLyaC,        color ='green', fmt='o', markersize=6)
+plot_errorbar(zLyaA,  37.77,  yerr=2.13,  color ='blue', fmt='o', markersize=6)
+plot_errorbar(zLyaA,  9.07*zLyaA,       yerr=0.31*zLyaA,       color ='blue', fmt='o', markersize=6)
+plot_errorbar(zLyaC,  35.7,   yerr=1.5,    color ='blue', fmt='o', markersize=6)
+plot_errorbar(zLyaC,  9.01*zLyaC,        yerr=0.32*zLyaC,        color ='blue', fmt='o', markersize=6)
 
 
 
