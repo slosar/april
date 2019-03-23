@@ -33,6 +33,11 @@ T=LCDMCosmology(Obh2=0.022,Om=0.31,h=0.676)
 #PLK-15
 #T=LCDMCosmology(Obh2=0.02225,Om=0.3156,h=0.6727)
 
+print T.DaOverrd(1), T.HIOverrd(1), T.rd
+
+
+stop()
+
 zLOWZ  = 0.32 
 zCMASS = 0.57
 zLyaA  = 2.33
