@@ -96,7 +96,15 @@ def ParseModel(model):
     elif model == "PolyCDM":
         T = PolyCDMCosmology()
     elif model == "fPolyCDM":
-        T = PolyCDMCosmology(varyOk=False)
+        T = PolyCDMCosmology(polyvary=['Om1','Om2'])
+    elif model == "PolyOk": ## polycdm for OK
+        T = PolyCDMCosmology(Ok_prior=10.)
+    elif model == "PolyOkc": ## polycdm sans Om2 term to couple two
+        T = PolyCDMCosmology(polyvary=['Om1','Ok'],Ok_prior=10.)
+    elif model == "PolyOkf": ## polycdm sans Om2 term to couple two
+        T = PolyCDMCosmology(polyvary=['Om1','Om2'])
+
+
     elif model == "EarlyDE":
         T = EarlyDECosmology(varyw=False, userd_DE=False)
     elif model == "EarlyDE_rd_DE":

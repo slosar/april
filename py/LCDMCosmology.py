@@ -89,18 +89,14 @@ class LCDMCosmology(BaseCosmology, RadiationAndNeutrinos):
 
     # Obh2 prior
     def prior_loglike(self):
-        # hack
-        # och2=self.Ocb*self.h**2-self.Obh2
-        # if (self.och2<0.1103000) or (self.och2>0.1289000):
-        #    if (rd_approx=="tabulated_Nnu"):
-        #        return -1e50
-
         if (self.varyPrefactor or self.noObh2prior):
             return 0
-        else:
-            # Cooke et al, http://arxiv.org/abs/1308.3240
-            # 2.202 +/- 0.046
-            return -(self.Obh2-0.02202)**2/(2*0.00046**2)
+        ## put back in if needed
+        # Cooke et al, http://arxiv.org/abs/1308.3240
+        # 2.202 +/- 0.046
+        #return -(self.Obh2-0.02202)**2/(2*0.00046**2)
+
+        return 0
 
     # this returns the Wang+Wang variables in a vec
     def WangWangVec(self):

@@ -25,8 +25,8 @@ wa_par = Parameter("wa", 0.0, 0.1, (-2.0, 2.0), "w_a")
 Pr_par = Parameter("Pr", 28.6, 4, (5, 70), "c/(H_0r_d)")
 
 # Poly Cosmology Parameters
-Om1_par = Parameter("Om1", 0.0, 0.1, (-3, 3), "\Omega_1")
-Om2_par = Parameter("Om2", 0.0, 0.1, (-3, 3), "\Omega_2")
+Om1_par = Parameter("Om1", 0.0, 0.7, (-3, 3), "\Omega_1")
+Om2_par = Parameter("Om2", 0.0, 0.7, (-3, 3), "\Omega_2")
 
 # JordiCDM Cosmology Parameters
 q_par = Parameter("q", 0.0, 0.2, (0, 1), "q")
