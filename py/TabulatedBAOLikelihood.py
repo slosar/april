@@ -46,6 +46,7 @@ class TabulatedBAOLikelihood (BaseLikelihood):
         self.loglint = RectBivariateSpline(
             self.aperp, self.aparl, logltab, kx=1, ky=1)
         print("Loading done")
+        print("rd = ",fid_theory.rd," Mpc")
         self.fidDaOverrd = fid_theory.DaOverrd(z)
         self.fidHIOverrd = fid_theory.HIOverrd(z)
         print("Fiducials at z=", z, ":", self.fidDaOverrd, self.fidHIOverrd)
