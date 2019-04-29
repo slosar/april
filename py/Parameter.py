@@ -3,34 +3,33 @@
 # Parameter has a name, a value, an error and some bounds
 # Names are also latex names.
 
+
 class Parameter:
-    def __init__(self,name,value,err=0, bounds=None,Ltxname=None):
-        self.name=name
+    def __init__(self, name, value, err=0, bounds=None, Ltxname=None):
+        self.name = name
         if Ltxname:
             self.Ltxname = Ltxname
         else:
             self.Ltxname = name
-        self.value=value
+        self.value = value
         # this is the estimate of error
-        self.error=err
-        if bounds==None:
-            self.bounds=(value-5*err, value+5*err)
+        self.error = err
+        if bounds == None:
+            self.bounds = (value-5*err, value+5*err)
         else:
-            self.bounds=bounds
-    
-    def sameParam(self,param2):
-        return self.name==param2.name
-  
-    def setLatexName(self,Ltx):
-        self.Ltxname=Ltx
+            self.bounds = bounds
 
-    def setValue(self,val):
-        self.value=val
+    def sameParam(self, param2):
+        return self.name == param2.name
 
-    def setError(self,err):
-        self.error=err
+    def setLatexName(self, Ltx):
+        self.Ltxname = Ltx
 
-    def setBounds (self, low,high):
-        self.bounds=[low,high]
+    def setValue(self, val):
+        self.value = val
 
+    def setError(self, err):
+        self.error = err
 
+    def setBounds(self, low, high):
+        self.bounds = [low, high]
