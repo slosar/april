@@ -134,12 +134,12 @@ def ParseDataset(datasets):
             L.addLikelihoods([
                 DR11LOWZ(),
                 DR11CMASS(),
-                DR11LyaAuto(),
-                DR11LyaCross(),
+                DR14LyaAuto(),
+                DR14LyaCross(),
                 SixdFGS(),
                 SDSSMGS()
             ])
-        elif name == 'GBAO':
+        elif name == 'GBAO11':
             L.addLikelihoods([
                 DR11LOWZ(),
                 DR11CMASS(),
@@ -163,16 +163,21 @@ def ParseDataset(datasets):
             ])
         elif name == 'LBAO':
             L.addLikelihoods([
+                DR14LyaAuto(),
+                DR14LyaCross()
+            ])
+        elif name == 'LBAO11':
+            L.addLikelihoods([
                 DR11LyaAuto(),
                 DR11LyaCross()
             ])
         elif name == 'LaBAO':
             L.addLikelihoods([
-                DR11LyaAuto(),
+                DR14LyaAuto(),
             ])
         elif name == 'LxBAO':
             L.addLikelihoods([
-                DR11LyaCross(),
+                DR14LyaCross(),
             ])
         elif name == "MGS":
             L.addLikelihood(SDSSMGS())

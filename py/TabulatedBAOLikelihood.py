@@ -9,17 +9,17 @@ from scipy.interpolate import RectBivariateSpline
 
 
 class TabulatedBAOLikelihood (BaseLikelihood):
-    def __init__(self, name, filename, chi2col, fid_theory, z):
+    def __init__(self, name, filename, chi2col, fid_theory, z, skiprows=0, aperp_col=0, apar_col=1):
         BaseLikelihood.__init__(self, name)
         print()
         print("Loading ", filename)
-        data = loadtxt(filename)
+        data = loadtxt(filename,skiprows=skiprows)
         # first let's autolearn the binning
         aperp = set()
         aparl = set()
         for line in data:
-            aperp.add(line[0])
-            aparl.add(line[1])
+            aperp.add(line[aperp_col])
+            aparl.add(line[apar_col])
         aperp = sorted(list(aperp))
         aparl = sorted(list(aparl))
         logltab = zeros((len(aperp), len(aparl)))
@@ -33,8 +33,8 @@ class TabulatedBAOLikelihood (BaseLikelihood):
 
         # now fill in the table
         for line in data:
-            ii = aperp.index(line[0])
-            jj = aparl.index(line[1])
+            ii = aperp.index(line[aperp_col])
+            jj = aparl.index(line[apar_col])
             if chi2col > 0:
                 chi2 = line[chi2col]
                 logltab[ii, jj] = -chi2/2.0

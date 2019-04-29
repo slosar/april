@@ -59,6 +59,38 @@ class DR11LyaCross(TabulatedBAOLikelihood):
         TabulatedBAOLikelihood.__init__(self, "DR11LyaCross", 'data/lyabaocross.scan',
                                         2, fidTheory, 2.36)
 
+
+class DR14LyaAuto(TabulatedBAOLikelihood):
+    def __init__(self):
+        # fiducial cosmology for Lya data.
+        # Taken from https://github.com/igmhub/picca/tree/master/data/deSainteAgatheetal2019/combined_stdFit
+        # fiducial model -- double check
+        obh2 = 0.0227
+        Om = 0.27
+        h = 0.7
+        mnu = 0.06  # ;# rd=149.77
+        fidTheory = LCDMCosmology(obh2, Om, h, mnu)
+        # File from 5/16 from Nicolas.
+        TabulatedBAOLikelihood.__init__(self, "DR14LyaAuto", 'data/deSainteAgatheetal2019_ap_at_scan.dat',
+                                        2, fidTheory, 2.34, aperp_col=1, apar_col=0, skiprows=1)
+
+class DR14LyaCross(TabulatedBAOLikelihood):
+    def __init__(self):
+        # fiducial cosmology for Lya data.
+        # Taken from https://github.com/igmhub/picca/tree/master/data/deSainteAgatheetal2019/combined_stdFit
+        # fiducial model -- double check
+        obh2 = 0.0227
+        Om = 0.27
+        h = 0.7
+        mnu = 0.06  # ;# rd=149.77
+        fidTheory = LCDMCosmology(obh2, Om, h, mnu)
+        # File from 5/16 from Nicolas.
+        TabulatedBAOLikelihood.__init__(self, "DR14LyaCross", 'data/Blomqvistetal2019_ap_at_scan.dat',
+                                        2, fidTheory, 2.34, aperp_col=1, apar_col=0, skiprows=1)
+
+
+
+
 # Data extracted from http://arxiv.org/pdf/1106.3366.pdf
 
 
