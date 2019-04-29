@@ -77,7 +77,7 @@ class DR14LyaAuto(TabulatedBAOLikelihood):
 class DR14LyaCross(TabulatedBAOLikelihood):
     def __init__(self):
         # fiducial cosmology for Lya data.
-        # Taken from https://github.com/igmhub/picca/tree/master/data/deSainteAgatheetal2019/combined_stdFit
+        # Taken from  https://github.com/igmhub/picca/tree/master/data/Blomqvistetal2019/cross_alone_stdFit
         # fiducial model -- double check
         obh2 = 0.0227
         Om = 0.27
