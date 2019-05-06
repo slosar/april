@@ -11,6 +11,7 @@ from LikelihoodMultiplier import *
 from CompositeLikelihood import *
 from HubbleParameterLikelihood import *
 from CompressedSNLikelihood import *
+from PantheonSNLikelihood import *
 from SimpleCMB import *
 from BAOLikelihoods import *
 from QuintCosmology import *
@@ -123,7 +124,7 @@ def ParseModel(model):
 
 
 data_list = "BBAO, GBAO, GBAO_no6dF, CMASS, LBAO, LaBAO, LxBAO, MGS, Planck, WMAP, PlRd, WRd, PlDa, PlRdx10,"\
-    "CMBW, SN, SNx10, UnionSN, RiessH0, 6dFGS"
+    "CMBW, SN, BetouleSN, BetouleSNx10, UnionSN, RiessH0, 6dFGS"
 
 
 def ParseDataset(datasets):
@@ -197,8 +198,10 @@ def ParseDataset(datasets):
         elif name == 'CMBW':
             L.addLikelihood(WMAP9Likelihood())
         elif name == 'SN':
+            L.addLikelihood(PantheonSNLikelihood())
+        elif name == 'BetouleSN':
             L.addLikelihood(BetouleSN())
-        elif name == 'SNx10':
+        elif name == 'BetouleSNx10':
             L.addLikelihood(LikelihoodMultiplier(BetouleSN(), 100.0))
         elif name == 'UnionSN':
             L.addLikelihood(UnionSN())
