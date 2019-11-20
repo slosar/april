@@ -2,6 +2,9 @@
 import sys, os
 
 #TODO -- Include model used in several papers
+#TODO -- Add Choronometers data
+#TODO -- Add Planck 15
+#TODO -- Add DR12 Galaxies
 
 # print sys.path
 sys.path = ["py", "../py"] + sys.path
@@ -49,9 +52,16 @@ model_list = "LCDOM, LCDMasslessnu, nuLCDM, NeffLCDM, noradLCDM, nuoLCDM, nuwLCD
 
 
 def ParseModel(model):
-    """
-    :param model: i.e. LCDM
-    :return  object with info/calculations based on this model: i.e. d_L, d_A, d_H
+    """ 
+    Parameters
+    -----------
+    model:
+         name of the model, i.e. LCDM
+
+    Returns
+    -----------
+    object - info/calculations based on this model: i.e. d_L, d_A, d_H
+
     """
 
     if model == "LCDM":
@@ -133,6 +143,17 @@ data_list = "BBAO, GBAO, GBAO_no6dF, CMASS, LBAO, LaBAO, LxBAO, MGS, Planck, WMA
 
 
 def ParseDataset(datasets):
+    """ 
+    Parameters
+    -----------
+    datasets:
+         name of datasets, i.e. BBAO
+
+    Returns
+    -----------
+    object - likelihood
+
+    """
     dlist = datasets.split('+')
     L = CompositeLikelihood([])
     for name in dlist:
