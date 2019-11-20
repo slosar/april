@@ -1,43 +1,46 @@
 # Add paths, we want to be able to run in either root or Run/
-import sys
-import os
+import sys, os
+
+#TODO -- Include model used in several papers
+
 # print sys.path
-sys.path = ["py", "../py"]+sys.path
+sys.path = ["py", "../py"] + sys.path
 
-from CosmoMCImportanceSampler import *
-from MCMCAnalyzer import *
-from MaxLikeAnalyzer import *
-from LikelihoodMultiplier import *
-from CompositeLikelihood import *
-from HubbleParameterLikelihood import *
-from CompressedSNLikelihood import *
-from SimpleCMB import *
-from BAOLikelihoods import *
-from QuintCosmology import *
-from SlowRDECosmology import *
-from EarlyDECosmology import *
-from StepCDMCosmology import *
-from DecayLCDMCosmology import *
-from SplineLCDMCosmology import *
-from TiredLightDecorator import *
-from WeirdCDMCosmology import *
-from JordiCDMCosmology import *
-from owa0CDMCosmology import *
-from PolyCDMCosmology import *
-from wLCDMCosmology import *
-from oLCDMCosmology import *
+# Cosmologies already included
 from LCDMCosmology import *
+from oLCDMCosmology import *
+from wLCDMCosmology import *
+from PolyCDMCosmology import *
+from owa0CDMCosmology import *
+from JordiCDMCosmology import *
+from WeirdCDMCosmology import *
+from TiredLightDecorator import *
+from SplineLCDMCosmology import *
+from DecayLCDMCosmology import *
+from StepCDMCosmology import *
+from EarlyDECosmology import *
+from SlowRDECosmology import *
+from QuintCosmology import *
 
-# Cosmologies
-#from wDMCosmology import *
-
-# Like modules
+# Likelihood modules
+from BAOLikelihoods import *
+from SimpleCMB import *
+from CompressedSNLikelihood import *
+from HubbleParameterLikelihood import *
 
 # Composite Likelihood
+from CompositeLikelihood import *
 
 # Likelihood Multiplier
+from LikelihoodMultiplier import *
 
 # Analyzers
+from MCMCAnalyzer import *
+from MaxLikeAnalyzer import *
+
+#Importance Sampling
+from CosmoMCImportanceSampler import *
+
 
 # String parser Aux routines
 model_list = "LCDOM, LCDMasslessnu, nuLCDM, NeffLCDM, noradLCDM, nuoLCDM, nuwLCDM, oLCDM, wCDM, waCDM, owCDM,"\
@@ -46,6 +49,11 @@ model_list = "LCDOM, LCDMasslessnu, nuLCDM, NeffLCDM, noradLCDM, nuoLCDM, nuwLCD
 
 
 def ParseModel(model):
+    """
+    :param model: i.e. LCDM
+    :return  object with info/calculations based on this model: i.e. d_L, d_A, d_H
+    """
+
     if model == "LCDM":
         T = LCDMCosmology()
     elif model == "LCDMmasslessnu":
@@ -96,15 +104,13 @@ def ParseModel(model):
     elif model == "PolyCDM":
         T = PolyCDMCosmology()
     elif model == "fPolyCDM":
-        T = PolyCDMCosmology(polyvary=['Om1','Om2'])
+        T = PolyCDMCosmology(polyvary=['Om1', 'Om2'])
     elif model == "PolyOk": ## polycdm for OK
         T = PolyCDMCosmology(Ok_prior=10.)
     elif model == "PolyOkc": ## polycdm sans Om2 term to couple two
-        T = PolyCDMCosmology(polyvary=['Om1','Ok'],Ok_prior=10.)
+        T = PolyCDMCosmology(polyvary=['Om1', 'Ok'], Ok_prior=10.)
     elif model == "PolyOkf": ## polycdm sans Om2 term to couple two
-        T = PolyCDMCosmology(polyvary=['Om1','Om2'])
-
-
+        T = PolyCDMCosmology(polyvary=['Om1', 'Om2'])
     elif model == "EarlyDE":
         T = EarlyDECosmology(varyw=False, userd_DE=False)
     elif model == "EarlyDE_rd_DE":

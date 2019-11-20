@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import sys
-from RunBase import *
+from RunBase import ParseModel, ParseDataset
+from MCMCAnalyzer import MCMCAnalyzer
+from MaxLikeAnalyzer import MaxLikeAnalyzer
 
 #
 # This little code allows running something
@@ -9,15 +11,15 @@ from RunBase import *
 #
 
 if (len(sys.argv) < 4):
-    print("""Usage: 
+    print("""Usage:
 
-Run/driver.py pre/phy model dataset [chain #] [# to skip] [# to take] [directory]
+Run/driver.py pre/phy model dataset [N chain #] [# steps to skip] [# to take] [chains directory]
 
-where model is one of 
+where model is one of
 
-%s 
+%s
 
-and datasets is one of 
+and datasets is one of
 
 %s
 
@@ -30,6 +32,8 @@ Run/driver.py phy LCDM BBAO+Planck
 
 
 prefact, model, datasets = sys.argv[1:4]
+
+
 if len(sys.argv) > 4:
     chainno = int(sys.argv[4])
 else:
@@ -61,7 +65,7 @@ T.printFreeParameters()
 L.setTheory(T)
 
 if chainno > 0:
-    M = MCMCAnalyzer(L, chainsdir + "/" + model+"_"+prefact+"_" +
+    M = MCMCAnalyzer(L, chainsdir + "/" + model + "_"+prefact + "_" +
                      datasets, skip=skip, nsamp=nsamp, temp=temp, chain_num=chainno)
 else:
     A = MaxLikeAnalyzer(L)
