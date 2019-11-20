@@ -28,6 +28,11 @@ class MCMCAnalyzer:
         self.chain_num = chain_num
         self.cpars = like.freeParameters()
         minvals, maxvals = [], []
+        self.dims = 0
+        self.chains = []
+        
+        for p in self.cpars: self.dims+=1
+
         for lb, hb in [p.bounds for p in self.cpars]:
             minvals.append(lb)
             maxvals.append(hb)
@@ -170,6 +175,15 @@ class MCMCAnalyzer:
         self.co += 1
         if (self.co % 1000 == 0):
             print("Accepted samples", self.co, self.cw)
+            #GR
+            criteria = np.empty(self.dims + 1)
+            criteria.fill(0.01)
+            diagnostic = GelmanRubinDiagnostic(self.chains, self.dims).GRDRun()
+            
+            if np.all(diagnostic < criteria): 
+                print("Convergence achivied!!!")
+                self.done = True
+
         vec = [p.value for p in self.cpars]
 
         if (self.co > self.skip):
@@ -183,6 +197,9 @@ class MCMCAnalyzer:
             else:
                 outstr = self.formstr % tuple([wers, -self.cloglike]+vec)
 
+            rowchain = [wers, -self.cloglike] + vec
+                             
+            self.chains.append(rowchain)
             self.fout.write(outstr)
             # Flush file on regular basis
             if (self.co % 1000 == 0):
