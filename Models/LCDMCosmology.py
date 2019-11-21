@@ -3,7 +3,7 @@
 # for most other cosmologies, mostly because it treats Neutrinos and Radiation
 # hassle.
 
-from BaseCosmology import *
+from BaseCosmology import BaseCosmology
 from RadiationAndNeutrinos import *
 import CosmoApprox as CA
 
