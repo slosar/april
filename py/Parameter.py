@@ -5,7 +5,7 @@
 
 
 class Parameter:
-    def __init__(self, name, value, err=0, bounds=None, Ltxname=None):
+    def __init__(self, name, value, err=0.0, bounds=None, Ltxname=None):
         self.name = name
         if Ltxname:
             self.Ltxname = Ltxname

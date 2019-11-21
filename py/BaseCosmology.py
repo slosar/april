@@ -2,31 +2,29 @@
 # parameterization of the equation of state or densities or anything.
 # However, it does know about Hubble's constant at z=0 OR the prefactor
 # c/(H0*rd) which should be fit for in the case of "rd agnostic" fits.
-# That is why you should let it declare those parameterd based on its settings
+# That is why you should let it declare those parameters based on its settings
 ##
 # However, to get the angular diameter distance you need to pass it
-# its Curvature parameter (Omega_k basically), so you need to update
-# it
+# its Curvature parameter (Omega_k basically), so you need to update it
+#
 
 
-from scipy import *
-from RadiationAndNeutrinos import *
-from Parameter import *
-from ParamDefs import *
+
+import scipy as sp
+from scipy import constants
 import scipy.integrate as intg
-from scipy.interpolate import griddata
-from scipy.integrate import odeint
-import CosmoApprox as CA
+
+from ParamDefs import h_par, Pr_par
 
 
 class BaseCosmology:
-    # speed of light
-    c_ = 299792.45
+    # speed of light in km s^-1
+    c_ = constants.c/1000.
 
     def __init__(self, h=h_par.value):
-        self.Curv = 0
-        self.rd = 149.50
-        self.h = h
+        self.Curv    = 0
+        self.rd      = 149.50
+        self.h       = h
         self.prefact = Pr_par.value
         self.varyPrefactor = False
         BaseCosmology.updateParams(self, [])
@@ -74,8 +72,8 @@ class BaseCosmology:
                 self.setPrefactor(p.value)
                 # h shouldn't matter here
                 # we do not want it to enter secondarily through
-                # say neutrinos, so let's keep it
-                # sane
+                # say neutrinos, so let's keep it sane
+                #
                 # self.h=p.value*self.rd*100/self.c_
         return True
 
@@ -86,14 +84,15 @@ class BaseCosmology:
     ## i.e. H(z)^2/H(z=0)^2
     def RHSquared_a(self, a):
         print("You should not instatiate BaseCosmology")
-        error("BAD")
+        print("BAD")
+        return 0
 
     def Hinv_z(self, z):
-        return 1/sqrt(self.RHSquared_a(1.0/(1+z)))
+        return 1./sp.sqrt(self.RHSquared_a(1.0/(1+z)))
 
     # @autojit
     def DistIntegrand_a(self, a):
-        return 1/sqrt(self.RHSquared_a(a))/a**2
+        return 1./sp.sqrt(self.RHSquared_a(a))/a**2
 
     # @autojit
     def Da_z(self, z):
@@ -105,47 +104,45 @@ class BaseCosmology:
         if self.Curv == 0:
             return r
         elif (self.Curv > 0):
-            q = sqrt(self.Curv)
+            q = sp.sqrt(self.Curv)
             # someone check this eq
             # Pure ADD has a 1+z fact, but have
             # comoving one
-            return sinh(r*q)/(q)
+            return sp.sinh(r*q)/(q)
         else:
-            q = sqrt(-self.Curv)
-            return sin(r*q)/(q)
+            q = sp.sqrt(-self.Curv)
+            return sp.sin(r*q)/(q)
 
     # D_a / rd
     def DaOverrd(self, z):
         return self.prefactor()*self.Da_z(z)
-    # H^{-1} / rd
 
+    # H^{-1} / rd
     def HIOverrd(self, z):
         return self.prefactor()*self.Hinv_z(z)
-    # Dv / rd
 
+    # Dv / rd
     def DVOverrd(self, z):
         return self.prefactor()*(self.Da_z(z)**(2./3.)*(z*self.Hinv_z(z))**(1./3.))
 
     # distance modulus
     def distance_modulus(self, z):
-
         # I think this should also work with varyPrefactor as long as BAO is there too
         # assert(not self.varyPrefactor)
 
         # note that our Da_z is comoving, so we're only
         # multilpyting with a single (1+z) factor
-        return 5*log10(self.Da_z(z)*(1+z))
+        return 5*sp.log10(self.Da_z(z)*(1+z))
 
     # returns the growth factor as a function of redshift
-
     def GrowthIntegrand_a(self, a):
-        return 1/(self.RHSquared_a(a)*a*a)**(1.5)
+        return 1./(self.RHSquared_a(a)*a*a)**(1.5)
 
     def growth(self, z):
         # Equation 7.80 from Doddie
         af = 1/(1.+z)
         r = intg.quad(self.GrowthIntegrand_a, 1e-7, af)
-        gr = sqrt(self.RHSquared_a(af))*r[0]  # assume precision is ok
+        gr = sp.sqrt(self.RHSquared_a(af))*r[0]  # assume precision is ok
         # If we have Omega_m, let's normalize that way
         if hasattr(self, "Om"):
             gr *= 5/2.*self.Om
