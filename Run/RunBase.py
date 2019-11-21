@@ -1,29 +1,29 @@
+# coding=utf-8
 # Add paths, we want to be able to run in either root or Run/
-import sys, os
+
+import sys
+sys.path = ["py", "../py", "Models"] + sys.path
 
 #TODO -- Include model used in several papers
 #TODO -- Add Choronometers data
 #TODO -- Add Planck 15
 #TODO -- Add DR12 Galaxies
 
-# print sys.path
-sys.path = ["py", "../py"] + sys.path
-
 # Cosmologies already included
-from LCDMCosmology import *
-from oLCDMCosmology import *
-from wLCDMCosmology import *
-from PolyCDMCosmology import *
-from owa0CDMCosmology import *
-from JordiCDMCosmology import *
-from WeirdCDMCosmology import *
-from TiredLightDecorator import *
-from SplineLCDMCosmology import *
-from DecayLCDMCosmology import *
-from StepCDMCosmology import *
-from EarlyDECosmology import *
-from SlowRDECosmology import *
-from QuintCosmology import *
+from LCDMCosmology import LCDMCosmology
+from oLCDMCosmology import oLCDMCosmology
+from wLCDMCosmology import wLCDMCosmology
+from PolyCDMCosmology import PolyCDMCosmology
+from owa0CDMCosmology import owa0CDMCosmology
+from JordiCDMCosmology import JordiCDMCosmology
+from WeirdCDMCosmology import WeirdCDMCosmology
+from TiredLightDecorator import TiredLightDecorator
+from SplineLCDMCosmology import SplineLCDMCosmology
+from DecayLCDMCosmology import DecayLCDMCosmology
+from StepCDMCosmology import StepCDMCosmology
+from EarlyDECosmology import EarlyDECosmology
+from SlowRDECosmology import SlowRDECosmology
+from QuintCosmology import QuintCosmology
 
 # Likelihood modules
 from BAOLikelihoods import *
