@@ -19,17 +19,22 @@ class Parameter:
         else:
             self.bounds = bounds
 
+
     def sameParam(self, param2):
         return self.name == param2.name
+
 
     def setLatexName(self, Ltx):
         self.Ltxname = Ltx
 
+
     def setValue(self, val):
         self.value = val
 
+
     def setError(self, err):
         self.error = err
+
 
     def setBounds(self, low, high):
         self.bounds = [low, high]

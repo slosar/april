@@ -8,7 +8,7 @@ from scipy.integrate import odeint
 from scipy.interpolate import interp1d
 from scipy.optimize import minimize
 from LCDMCosmology import *
-
+from ParamDefs import xfrac_par
 
 class DecayLCDMCosmology(LCDMCosmology):
     # note that if we don't varyOr, it will be set so that
