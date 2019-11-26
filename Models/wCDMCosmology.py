@@ -12,12 +12,13 @@ class wCDMCosmology(LCDMCosmology):
         self.w = w_par.value
         LCDMCosmology.__init__(self)
 
+
     # my free parameters. We add w on top of LCDM ones (we inherit LCDM)
     def freeParameters(self):
         l = LCDMCosmology.freeParameters(self)
-        if (self.varyw):
-            l.append(w_par)
+        if (self.varyw): l.append(w_par)
         return l
+
 
     def updateParams(self, pars):
         ok = LCDMCosmology.updateParams(self, pars)
@@ -27,6 +28,7 @@ class wCDMCosmology(LCDMCosmology):
             if p.name == "w":
                 self.w = p.value
         return True
+
 
     # this is relative hsquared as a function of a
     ## i.e. H(z)^2/H(z=0)^2

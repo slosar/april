@@ -13,8 +13,8 @@ sys.path = ["py", "../py", "Models", "Cosmo"] + sys.path
 from LCDMCosmology import LCDMCosmology
 from oLCDMCosmology import oLCDMCosmology
 from wCDMCosmology import wCDMCosmology
-from PolyCDMCosmology import PolyCDMCosmology
 from owa0CDMCosmology import owa0CDMCosmology
+from PolyCDMCosmology import PolyCDMCosmology
 from JordiCDMCosmology import JordiCDMCosmology
 from WeirdCDMCosmology import WeirdCDMCosmology
 from TiredLightDecorator import TiredLightDecorator
@@ -23,7 +23,9 @@ from DecayLCDMCosmology import DecayLCDMCosmology
 from StepCDMCosmology import StepCDMCosmology
 from EarlyDECosmology import EarlyDECosmology
 from SlowRDECosmology import SlowRDECosmology
+from BinnedWCosmology import BinnedWCosmology
 from QuintCosmology import QuintCosmology
+
 
 # Likelihood modules
 from BAOLikelihoods import *
@@ -127,6 +129,8 @@ def ParseModel(model):
         T = EarlyDECosmology(varyw=False)
     elif model == "SlowRDE":
         T = SlowRDECosmology(varyOk=False)
+    elif model == "Binned":
+        T = BinnedWCosmology()
     elif model == "Quint_last":
         T = QuintCosmology()
     elif model == 'wDM':

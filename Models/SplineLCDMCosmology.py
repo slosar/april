@@ -2,9 +2,10 @@
 # This si a cosmology where w(z) is defined by splines.
 ##
 
-from numpy import linspace
+
 from scipy.interpolate import InterpolatedUnivariateSpline
-from LCDMCosmology import *
+from LCDMCosmology import LCDMCosmology
+from ParamDefs import Sp1_par, Sp2_par, Sp3_par, Sp4_par
 import math as N
 
 
@@ -22,27 +23,26 @@ class SplineLCDMCosmology(LCDMCosmology):
         self.Sp4 = Sp4_par.value
 
         # Nodes are equally-spaced in log10(z)
-        self.zmin = 0.1                   # first-node position
-        self.zmax = 2.5                   # last-node position
+        self.zmin   = 0.1                 # first-node position
+        self.zmax   = 2.5                 # last-node position
         self.Nnodes = 6                   # number of nodes used
 
-        self.lzmin = log10(self.zmin)
-        self.lzmax = log10(self.zmax)
+        self.lzmin = N.log10(self.zmin)
+        self.lzmax = N.log10(self.zmax)
 
         LCDMCosmology.__init__(self)
+
+
 
     # my free parameters. We add Ok on top of LCDM ones (we inherit LCDM)
     def freeParameters(self):
         l = LCDMCosmology.freeParameters(self)
-        if (self.varySp1):
-            l.append(Sp1_par)
-        if (self.varySp2):
-            l.append(Sp2_par)
-        if (self.varySp3):
-            l.append(Sp3_par)
-        if (self.varySp4):
-            l.append(Sp4_par)
+        if (self.varySp1): l.append(Sp1_par)
+        if (self.varySp2): l.append(Sp2_par)
+        if (self.varySp3): l.append(Sp3_par)
+        if (self.varySp4): l.append(Sp4_par)
         return l
+
 
     def updateParams(self, pars):
         ok = LCDMCosmology.updateParams(self, pars)
@@ -59,15 +59,17 @@ class SplineLCDMCosmology(LCDMCosmology):
                 self.Sp4 = p.value
         return True
 
+
     def Spline(self, a):
         z = 1.0/a-1.0
         x = [10**(self.lzmin+(self.lzmax-self.lzmin)/(self.Nnodes-1)*i)
              for i in range(0, int(self.Nnodes))]
-        # print x
+
         y = [1.0, self.Sp1, self.Sp2, self.Sp3, self.Sp4, 1.0]
         s = InterpolatedUnivariateSpline(x, y)
         ys = s(z)
         return ys
+
 
     def Rho_de(self, a):
         z = 1.0/a-1.0
@@ -75,6 +77,7 @@ class SplineLCDMCosmology(LCDMCosmology):
             return 1.0
         else:
             return self.Spline(a)
+
 
     # this is relative hsquared as a function of a
     ## i.e. H(z)^2/H(z=0)^2

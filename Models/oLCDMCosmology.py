@@ -13,6 +13,7 @@ class oLCDMCosmology(LCDMCosmology):
         self.zeroDE = zeroDE
         LCDMCosmology.__init__(self, **kwargs_LCDM)
 
+
     # my free parameters. We add Ok on top of LCDM ones (we inherit LCDM)
     def freeParameters(self):
         Ok_par.setValue(self.Ok)
@@ -20,6 +21,7 @@ class oLCDMCosmology(LCDMCosmology):
         if not self.zeroDE:
             l.append(Ok_par)
         return l+LCDMCosmology.freeParameters(self)
+
 
     def updateParams(self, pars):
         ok = LCDMCosmology.updateParams(self, pars)
@@ -41,6 +43,7 @@ class oLCDMCosmology(LCDMCosmology):
             self.Ok = 1-self.Om
             self.setCurvature(self.Ok)
         return True
+
 
     # this is relative Hsquared as a function of a
     ## i.e. H(z)^2/H(z=0)^2

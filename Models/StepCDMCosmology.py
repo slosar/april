@@ -3,18 +3,16 @@
 #
 
 import numpy
-from numpy import linspace
-#from scipy.interpolate import InterpolatedUnivariateSpline
-from LCDMCosmology import *
-import math as N
+from LCDMCosmology import LCDMCosmology
+from ParamDefs import *
 
 
 class StepCDMCosmology(LCDMCosmology):
     def __init__(self):
 
         self.NZ = int(step_nz_par.value)
-        self.Z = numpy.zeros((self.NZ))  # redshifts of bin boundaries
-        self.R = numpy.zeros((self.NZ+1))  # rho_de/rho_c in bins
+        self.Z  = numpy.zeros((self.NZ))  # redshifts of bin boundaries
+        self.R  = numpy.zeros((self.NZ+1))  # rho_de/rho_c in bins
 
         # see ParamDefs.py for the values of parameters
         if(self.NZ > 0):
@@ -41,22 +39,19 @@ class StepCDMCosmology(LCDMCosmology):
         self.Ok = 1.-self.RHSquared_a(1.)
         self.setCurvature(self.Ok)
 
-    # my free parameters. We add Ok on top of LCDM ones (we inherit LCDM)
 
+    # my free parameters. We add Ok on top of LCDM ones (we inherit LCDM)
     def freeParameters(self):
         l = LCDMCosmology.freeParameters(self)
         if(self.NZ > 0):
             l.append(step_rho0_par)
             l.append(step_rho1_par)
-        if(self.NZ > 1):
-            l.append(step_rho2_par)
-        if(self.NZ > 2):
-            l.append(step_rho3_par)
-        if(self.NZ > 3):
-            l.append(step_rho4_par)
-        if(self.NZ > 4):
-            l.append(step_rho5_par)
+        if(self.NZ > 1): l.append(step_rho2_par)
+        if(self.NZ > 2): l.append(step_rho3_par)
+        if(self.NZ > 3): l.append(step_rho4_par)
+        if(self.NZ > 4): l.append(step_rho5_par)
         return l
+
 
     def updateParams(self, pars):
         ok = LCDMCosmology.updateParams(self, pars)
@@ -73,12 +68,14 @@ class StepCDMCosmology(LCDMCosmology):
         self.setCurvature(self.Ok)
         return True
 
+
     def Rho_de(self, a):
         z = 1.0/a-1.0
         for i in range(self.NZ):
             if (z < self.Z[i]):
                 return self.R[i]
         return self.R[self.NZ]
+
 
     # this is relative hsquared as a function of a
     ## i.e. H(z)^2/H(z=0)^2

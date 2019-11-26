@@ -3,30 +3,30 @@
 # I do not.
 #
 
-import math as N
-from LCDMCosmology import *
+from LCDMCosmology import LCDMCosmology
+from ParamDefs import Ok_par, dw_par
 
 
 class SlowRDECosmology(LCDMCosmology):
     def __init__(self, varyw=True, varyOk=True):
         # two parameters: Om and h
 
-        self.varyw = varyw
+        self.varyw  = varyw
         self.varyOk = varyOk
 
-        self.Ok = Ok_par.value
+        self.Ok  = Ok_par.value
         self.dw0 = dw_par.value
 
         LCDMCosmology.__init__(self)
 
+
     # my free parameters. We add Ok on top of LCDM ones (we inherit LCDM)
     def freeParameters(self):
         l = LCDMCosmology.freeParameters(self)
-        if (self.varyw):
-            l.append(dw_par)
-        if (self.varyOk):
-            l.append(Ok_par)
+        if (self.varyw):  l.append(dw_par)
+        if (self.varyOk): l.append(Ok_par)
         return l
+
 
     def updateParams(self, pars):
         ok = LCDMCosmology.updateParams(self, pars)
@@ -42,11 +42,12 @@ class SlowRDECosmology(LCDMCosmology):
                     return False
         return True
 
+
     # this is relative hsquared as a function of a
     ## i.e. H(z)^2/H(z=0)^2
     def RHSquared_a(self, a):
         onepz = 1.0/a
         NuContrib = self.NuDensity.rho(a)/self.h**2
-        Ode = 1.0-self.Om-self.Ok
+        Ode  = 1.0-self.Om-self.Ok
         rhow = (onepz**3.0/(self.Om*onepz**3.0+Ode))**(self.dw0/Ode)
         return (self.Ocb/a**3+self.Ok/a**2+self.Omrad/a**4+NuContrib+Ode*rhow)
