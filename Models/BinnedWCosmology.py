@@ -2,10 +2,10 @@
 # Still testing the file -- don't trust it
 
 from LCDMCosmology import LCDMCosmology
-import numpy as np
 from scipy.interpolate import interp1d
 from scipy.integrate import quad
 from Parameter import Parameter
+import numpy as np
 
 class BinnedWCosmology(LCDMCosmology):
     def __init__(self, dz=0.2, zmax=1.0):
