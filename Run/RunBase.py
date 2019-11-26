@@ -12,7 +12,7 @@ sys.path = ["py", "../py", "Models", "Cosmo"] + sys.path
 # Cosmologies already included
 from LCDMCosmology import LCDMCosmology
 from oLCDMCosmology import oLCDMCosmology
-from wLCDMCosmology import wLCDMCosmology
+from wCDMCosmology import wCDMCosmology
 from PolyCDMCosmology import PolyCDMCosmology
 from owa0CDMCosmology import owa0CDMCosmology
 from JordiCDMCosmology import JordiCDMCosmology
@@ -83,9 +83,9 @@ def ParseModel(model):
         T = oLCDMCosmology()
         T.setVaryMnu()
     elif model == "wCDM":
-        T = wLCDMCosmology()
+        T = wCDMCosmology()
     elif model == "nuwCDM":
-        T = wLCDMCosmology()
+        T = wCDMCosmology()
         T.setVaryMnu()
     elif model == "waCDM":
         T = owa0CDMCosmology(varyOk=False)

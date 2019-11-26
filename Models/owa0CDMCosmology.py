@@ -2,14 +2,14 @@
 
 
 import math as N
-from LCDMCosmology import *
-
+from LCDMCosmology import LCDMCosmology
+from ParamDefs import w_par, wa_par, Ok_par
 
 class owa0CDMCosmology(LCDMCosmology):
     def __init__(self, varyw=True, varywa=True, varyOk=True):
-        # two parameters: Om and h
+        # three parameters: w, wa, Ok
 
-        self.varyw = varyw
+        self.varyw  = varyw
         self.varywa = varywa
         self.varyOk = varyOk
 

@@ -22,6 +22,7 @@ class LCDMCosmology(BaseCosmology, RadiationAndNeutrinos):
         self.Om    = Om
         self.Obh2  = Obh2
         self.fixOm = fixOm
+
         BaseCosmology.__init__(self, h)
         RadiationAndNeutrinos.__init__(
             self, mnu, Nnu, degenerate_nu, disable=disable_radiation)
