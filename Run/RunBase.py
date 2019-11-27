@@ -35,8 +35,7 @@ from LikelihoodMultiplier import LikelihoodMultiplier
 # Likelihood modules
 from BAOLikelihoods import DR11LOWZ, DR11CMASS, DR14LyaAuto, DR14LyaCross, \
         SixdFGS, SDSSMGS, DR11LyaAuto, DR11LyaCross
-
-from SimpleCMB import *
+from SimpleCMB import PlanckLikelihood, WMAP9Likelihood
 from CompressedSNLikelihood import *
 from HubbleParameterLikelihood import *
 
