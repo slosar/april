@@ -26,18 +26,19 @@ from SlowRDECosmology import SlowRDECosmology
 from BinnedWCosmology import BinnedWCosmology
 from QuintCosmology import QuintCosmology
 
+# Composite Likelihood
+from CompositeLikelihood import CompositeLikelihood
+
+# Likelihood Multiplier
+from LikelihoodMultiplier import LikelihoodMultiplier
 
 # Likelihood modules
-from BAOLikelihoods import *
+from BAOLikelihoods import DR11LOWZ, DR11CMASS, DR14LyaAuto, DR14LyaCross, \
+        SixdFGS, SDSSMGS, DR11LyaAuto, DR11LyaCross
+
 from SimpleCMB import *
 from CompressedSNLikelihood import *
 from HubbleParameterLikelihood import *
-
-# Composite Likelihood
-from CompositeLikelihood import *
-
-# Likelihood Multiplier
-from LikelihoodMultiplier import *
 
 # Analyzers
 from MCMCAnalyzer import *
@@ -179,9 +180,9 @@ def ParseDataset(datasets):
             ])
         elif name == 'GBAOx10':
             L.addLikelihoods([
-                LikelihoodMultiplier(DR11LOWZ(), 100.0),
+                LikelihoodMultiplier(DR11LOWZ(),  100.0),
                 LikelihoodMultiplier(DR11CMASS(), 100.0),
-                LikelihoodMultiplier(SixdFGS(), 100.0)
+                LikelihoodMultiplier(SixdFGS(),   100.0)
             ])
         elif name == 'GBAO_no6dF':
             L.addLikelihoods([
