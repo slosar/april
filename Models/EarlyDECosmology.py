@@ -2,8 +2,9 @@
 # Early Dark Energy cosmology.
 #
 
-import math as N
-from LCDMCosmology import *
+
+from LCDMCosmology import LCDMCosmology
+from ParamDefs import w_par, Ode_par
 
 
 class EarlyDECosmology(LCDMCosmology):
@@ -13,23 +14,23 @@ class EarlyDECosmology(LCDMCosmology):
         self.userd_DE = userd_DE
         print('userd', userd_DE)
 
-        self.varyw = varyw
+        self.varyw   = varyw
         self.varyOde = varyOde
 
-        self.w0 = w_par.value
+        self.w0  = w_par.value
         self.Ode = Ode_par.value
 
         self.oC = LCDMCosmology()
         LCDMCosmology.__init__(self)
 
+
     # my free parameters. We add Ok on top of LCDM ones (we inherit LCDM)
     def freeParameters(self):
         l = LCDMCosmology.freeParameters(self)
-        if (self.varyw):
-            l.append(w_par)
-        if (self.varyOde):
-            l.append(Ode_par)
+        if (self.varyw):   l.append(w_par)
+        if (self.varyOde): l.append(Ode_par)
         return l
+
 
     def updateParams(self, pars):
         ok = LCDMCosmology.updateParams(self, pars)
@@ -43,6 +44,7 @@ class EarlyDECosmology(LCDMCosmology):
                 self.Ode = p.value
         return True
 
+
     # this is relative hsquared as a function of a
     ## i.e. H(z)^2/H(z=0)^2
     def RHSquared_a(self, a):
@@ -53,6 +55,7 @@ class EarlyDECosmology(LCDMCosmology):
                                                              factor*a**(3*(1.0+self.w0))) + self.Ode*(1.0-a**(-3*self.w0))
         return factor/(1.0-Omega_d)
 
+
     def prefactor(self):
         if self.userd_DE:
             self.rd = self.oC.rd*((1.-self.Ode)**(0.5))
@@ -61,10 +64,10 @@ class EarlyDECosmology(LCDMCosmology):
         return self.c_/(self.rd*self.h*100)
 
 
-# for printing purposes only
 
+# for printing purposes only
     def Omega_de(self, a):
         NuContrib = self.NuDensity.rho(a)/self.h**2
-        Omega_d0 = 1.0-self.Ocb-self.Omrad-self.NuDensity.rho(1.0)/self.h**2
-        factor = self.Ocb/a**3+self.Omrad/a**4+NuContrib
+        Omega_d0  = 1.0-self.Ocb-self.Omrad-self.NuDensity.rho(1.0)/self.h**2
+        factor    = self.Ocb/a**3+self.Omrad/a**4+NuContrib
         return (Omega_d0-self.Ode*(1.0-a**(-3*self.w0)))/(Omega_d0+factor*a**(3*(1.0+self.w0))) + self.Ode*(1.0-a**(-3*self.w0))

@@ -2,16 +2,17 @@
 # curvature which you can set up with
 # setVaryOk()
 
-from LCDMCosmology import *
-
+from LCDMCosmology import LCDMCosmology
+from ParamDefs import Ok_par
 
 class oLCDMCosmology(LCDMCosmology):
     # zeroDE forces Ol to zero.
     def __init__(self, zeroDE=False, kwargs_LCDM={}):
         # two parameters: Om and h
-        self.Ok = Ok_par.value
+        self.Ok     = Ok_par.value
         self.zeroDE = zeroDE
         LCDMCosmology.__init__(self, **kwargs_LCDM)
+
 
     # my free parameters. We add Ok on top of LCDM ones (we inherit LCDM)
     def freeParameters(self):
@@ -21,6 +22,7 @@ class oLCDMCosmology(LCDMCosmology):
             l.append(Ok_par)
         return l+LCDMCosmology.freeParameters(self)
 
+
     def updateParams(self, pars):
         ok = LCDMCosmology.updateParams(self, pars)
         if not ok:
@@ -28,10 +30,10 @@ class oLCDMCosmology(LCDMCosmology):
         for p in pars:
             if p.name == "Ok":
                 self.Ok = p.value
-                # se comments to base class
+                # se comments to BaseCosmology class
                 # in short, WE hold the Ok parameter
                 # (maybe you want to parameterize it differently),
-                # but the base class needs to know about Ok in order
+                # but the BaseCosmology class needs to know about Ok in order
                 # to get Da and its sin/sinhs right.
                 self.setCurvature(self.Ok)
                 if (abs(self.Ok) > 1.0):
@@ -42,7 +44,8 @@ class oLCDMCosmology(LCDMCosmology):
             self.setCurvature(self.Ok)
         return True
 
-    # this is relative hsquared as a function of a
+
+    # this is relative Hsquared as a function of a
     ## i.e. H(z)^2/H(z=0)^2
     def RHSquared_a(self, a):
         NuContrib = self.NuDensity.rho(a)/self.h**2

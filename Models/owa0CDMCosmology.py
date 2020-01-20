@@ -2,14 +2,14 @@
 
 
 import math as N
-from LCDMCosmology import *
-
+from LCDMCosmology import LCDMCosmology
+from ParamDefs import w_par, wa_par, Ok_par
 
 class owa0CDMCosmology(LCDMCosmology):
     def __init__(self, varyw=True, varywa=True, varyOk=True):
-        # two parameters: Om and h
+        # three parameters: w, wa, Ok
 
-        self.varyw = varyw
+        self.varyw  = varyw
         self.varywa = varywa
         self.varyOk = varyOk
 
@@ -18,16 +18,15 @@ class owa0CDMCosmology(LCDMCosmology):
         self.wa = wa_par.value
         LCDMCosmology.__init__(self)
 
+
     # my free parameters. We add Ok on top of LCDM ones (we inherit LCDM)
     def freeParameters(self):
         l = LCDMCosmology.freeParameters(self)
-        if (self.varyw):
-            l.append(w_par)
-        if (self.varywa):
-            l.append(wa_par)
-        if (self.varyOk):
-            l.append(Ok_par)
+        if (self.varyw):  l.append(w_par)
+        if (self.varywa): l.append(wa_par)
+        if (self.varyOk): l.append(Ok_par)
         return l
+
 
     def updateParams(self, pars):
         ok = LCDMCosmology.updateParams(self, pars)
@@ -44,6 +43,7 @@ class owa0CDMCosmology(LCDMCosmology):
                 if (abs(self.Ok) > 1.0):
                     return False
         return True
+
 
     # this is relative hsquared as a function of a
     ## i.e. H(z)^2/H(z=0)^2

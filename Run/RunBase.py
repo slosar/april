@@ -1,43 +1,51 @@
+# coding=utf-8
 # Add paths, we want to be able to run in either root or Run/
+
 import sys
-import os
-# print sys.path
-sys.path = ["py", "../py"]+sys.path
+sys.path = ["py", "../py", "Models", "Cosmo", "Likelihoods"] + sys.path
 
-from CosmoMCImportanceSampler import *
-from MCMCAnalyzer import *
-from MaxLikeAnalyzer import *
-from LikelihoodMultiplier import *
-from CompositeLikelihood import *
-from HubbleParameterLikelihood import *
-from CompressedSNLikelihood import *
-from SimpleCMB import *
-from BAOLikelihoods import *
-from QuintCosmology import *
-from SlowRDECosmology import *
-from EarlyDECosmology import *
-from StepCDMCosmology import *
-from DecayLCDMCosmology import *
-from SplineLCDMCosmology import *
-from TiredLightDecorator import *
-from WeirdCDMCosmology import *
-from JordiCDMCosmology import *
-from owa0CDMCosmology import *
-from PolyCDMCosmology import *
-from wLCDMCosmology import *
-from oLCDMCosmology import *
-from LCDMCosmology import *
+#TODO -- Include model used in several papers
+#TODO -- Add Choronometers data
+#TODO -- Add Planck 15
+#TODO -- Add DR12 Galaxies
 
-# Cosmologies
-#from wDMCosmology import *
-
-# Like modules
+# Cosmologies already included
+from LCDMCosmology import LCDMCosmology
+from oLCDMCosmology import oLCDMCosmology
+from wCDMCosmology import wCDMCosmology
+from owa0CDMCosmology import owa0CDMCosmology
+from PolyCDMCosmology import PolyCDMCosmology
+from JordiCDMCosmology import JordiCDMCosmology
+from WeirdCDMCosmology import WeirdCDMCosmology
+from TiredLightDecorator import TiredLightDecorator
+from SplineLCDMCosmology import SplineLCDMCosmology
+from DecayLCDMCosmology import DecayLCDMCosmology
+from StepCDMCosmology import StepCDMCosmology
+from EarlyDECosmology import EarlyDECosmology
+from SlowRDECosmology import SlowRDECosmology
+from BinnedWCosmology import BinnedWCosmology
+from QuintCosmology import QuintCosmology
 
 # Composite Likelihood
+from CompositeLikelihood import CompositeLikelihood
 
 # Likelihood Multiplier
+from LikelihoodMultiplier import LikelihoodMultiplier
+
+# Likelihood modules
+from BAOLikelihoods import DR11LOWZ, DR11CMASS, DR14LyaAuto, DR14LyaCross, \
+        SixdFGS, SDSSMGS, DR11LyaAuto, DR11LyaCross
+from SimpleCMB import PlanckLikelihood, WMAP9Likelihood
+from CompressedSNLikelihood import *
+from HubbleParameterLikelihood import *
 
 # Analyzers
+from MCMCAnalyzer import *
+from MaxLikeAnalyzer import *
+
+#Importance Sampling
+from CosmoMCImportanceSampler import *
+
 
 # String parser Aux routines
 model_list = "LCDOM, LCDMasslessnu, nuLCDM, NeffLCDM, noradLCDM, nuoLCDM, nuwLCDM, oLCDM, wCDM, waCDM, owCDM,"\
@@ -46,6 +54,18 @@ model_list = "LCDOM, LCDMasslessnu, nuLCDM, NeffLCDM, noradLCDM, nuoLCDM, nuwLCD
 
 
 def ParseModel(model):
+    """ 
+    Parameters
+    -----------
+    model:
+         name of the model, i.e. LCDM
+
+    Returns
+    -----------
+    object - info/calculations based on this model: i.e. d_L, d_A, d_H
+
+    """
+
     if model == "LCDM":
         T = LCDMCosmology()
     elif model == "LCDMmasslessnu":
@@ -65,9 +85,9 @@ def ParseModel(model):
         T = oLCDMCosmology()
         T.setVaryMnu()
     elif model == "wCDM":
-        T = wLCDMCosmology()
+        T = wCDMCosmology()
     elif model == "nuwCDM":
-        T = wLCDMCosmology()
+        T = wCDMCosmology()
         T.setVaryMnu()
     elif model == "waCDM":
         T = owa0CDMCosmology(varyOk=False)
@@ -96,21 +116,21 @@ def ParseModel(model):
     elif model == "PolyCDM":
         T = PolyCDMCosmology()
     elif model == "fPolyCDM":
-        T = PolyCDMCosmology(polyvary=['Om1','Om2'])
+        T = PolyCDMCosmology(polyvary=['Om1', 'Om2'])
     elif model == "PolyOk": ## polycdm for OK
         T = PolyCDMCosmology(Ok_prior=10.)
     elif model == "PolyOkc": ## polycdm sans Om2 term to couple two
-        T = PolyCDMCosmology(polyvary=['Om1','Ok'],Ok_prior=10.)
+        T = PolyCDMCosmology(polyvary=['Om1', 'Ok'], Ok_prior=10.)
     elif model == "PolyOkf": ## polycdm sans Om2 term to couple two
-        T = PolyCDMCosmology(polyvary=['Om1','Om2'])
-
-
+        T = PolyCDMCosmology(polyvary=['Om1', 'Om2'])
     elif model == "EarlyDE":
         T = EarlyDECosmology(varyw=False, userd_DE=False)
     elif model == "EarlyDE_rd_DE":
         T = EarlyDECosmology(varyw=False)
     elif model == "SlowRDE":
         T = SlowRDECosmology(varyOk=False)
+    elif model == "Binned":
+        T = BinnedWCosmology()
     elif model == "Quint_last":
         T = QuintCosmology()
     elif model == 'wDM':
@@ -127,6 +147,17 @@ data_list = "BBAO, GBAO, GBAO_no6dF, CMASS, LBAO, LaBAO, LxBAO, MGS, Planck, WMA
 
 
 def ParseDataset(datasets):
+    """ 
+    Parameters
+    -----------
+    datasets:
+         name of datasets, i.e. BBAO
+
+    Returns
+    -----------
+    object - likelihood
+
+    """
     dlist = datasets.split('+')
     L = CompositeLikelihood([])
     for name in dlist:
@@ -148,9 +179,9 @@ def ParseDataset(datasets):
             ])
         elif name == 'GBAOx10':
             L.addLikelihoods([
-                LikelihoodMultiplier(DR11LOWZ(), 100.0),
+                LikelihoodMultiplier(DR11LOWZ(),  100.0),
                 LikelihoodMultiplier(DR11CMASS(), 100.0),
-                LikelihoodMultiplier(SixdFGS(), 100.0)
+                LikelihoodMultiplier(SixdFGS(),   100.0)
             ])
         elif name == 'GBAO_no6dF':
             L.addLikelihoods([

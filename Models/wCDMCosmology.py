@@ -1,17 +1,24 @@
-# This is a CDM cosmology with w
+# This is a CDM cosmology with constant eos w for DE
 
-from LCDMCosmology import *
+from LCDMCosmology import LCDMCosmology
+from ParamDefs import w_par
 
 
-class wLCDMCosmology(LCDMCosmology):
-    def __init__(self):
+class wCDMCosmology(LCDMCosmology):
+    def __init__(self, varyw=True):
         # two parameters: Om and h
-        self.w = -1
+
+        self.varyw = varyw
+        self.w = w_par.value
         LCDMCosmology.__init__(self)
 
-    # my free parameters. We add Ok on top of LCDM ones (we inherit LCDM)
+
+    # my free parameters. We add w on top of LCDM ones (we inherit LCDM)
     def freeParameters(self):
-        return [w_par]+LCDMCosmology.freeParameters(self)
+        l = LCDMCosmology.freeParameters(self)
+        if (self.varyw): l.append(w_par)
+        return l
+
 
     def updateParams(self, pars):
         ok = LCDMCosmology.updateParams(self, pars)
@@ -21,6 +28,7 @@ class wLCDMCosmology(LCDMCosmology):
             if p.name == "w":
                 self.w = p.value
         return True
+
 
     # this is relative hsquared as a function of a
     ## i.e. H(z)^2/H(z=0)^2

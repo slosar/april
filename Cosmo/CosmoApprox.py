@@ -2,6 +2,7 @@
 # and rd calculators in the second section
 ##
 
+import sys
 import math as N
 Tcmb = 2.7255
 
@@ -72,6 +73,7 @@ def rd_anderson_approx(obh2, ocbh2, onuh2, Nnu):
     if (abs(Nnu-3) > 0.1):
         print("ERROR, cannot use anderson approx with Nnu")
         print("Nnu=", Nnu)
+        sys.exit(1)
     return 55.234 / (ocbh2**0.2538 * obh2**0.1278 * (1+onuh2)**0.3794)
 
 
@@ -79,7 +81,7 @@ def rd_cuesta_approx(obh2, ocbh2, onuh2, Nnu):
     if (abs(Nnu-3) > 0.1):
         print("ERROR, Tony Cuesta says: 'not in this ceral box.'")
         print("Nnu=", Nnu)
-        stop()
+        sys.exit(1)
     return 55.154 / (ocbh2**0.25351 * (obh2)**0.12807 * N.exp(
         (onuh2+0.0006)**2.0/0.1176**2))
 
@@ -92,5 +94,5 @@ def rd_EH_approx(obh2, ocbh2, onuh2, Nnu):
     if (abs(Nnu-3) > 0.1):
         print("ERROR, cannot use EH approx with Nnu.")
         print("Nnu=", Nnu)
-        stop()
+        sys.exit(1)
     return self.CA.soundhorizon_eh(ocbh2, obh2, Nnu)

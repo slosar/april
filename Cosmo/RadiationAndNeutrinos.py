@@ -5,8 +5,9 @@
 # but it became clutterish there.
 ##
 
-from NuDensity import *
-from ParamDefs import *
+import sys
+from ParamDefs import mnu_par, Nnu_par
+from NuDensity import ZeroNuDensity, NuDensity
 import CosmoApprox as CA
 
 
@@ -22,9 +23,9 @@ class RadiationAndNeutrinos:
                  varyMnu=False, varyNnu=False, degenerate=False, disable=False):
         self.disabled = disable
         if (self.disabled):
-            self.Omrad = 0
-            self.Omnuh2 = 0
-            self.Omnu = 0
+            self.Omrad     = 0
+            self.Omnuh2    = 0
+            self.Omnu      = 0
             self.NuDensity = ZeroNuDensity()
             return
         self.varyMnu = False
@@ -32,39 +33,46 @@ class RadiationAndNeutrinos:
         self.NuDensity = NuDensity(CA.Tcmb, Nnu, mnu, degenerate)
         # print "Relic neutrino density:",self.NuDensity.omnuh2today
 
+
     def setVaryMnu(self, T=True):
         if self.disabled:
             print("Cannot vary radiation parameter if disabled")
-            stop()
+            sys.exit(1)
         self.varyMnu = T
+
 
     def setVaryNnu(self, T=True):
         if self.disabled:
             print("Cannot vary radiation parameter if disabled")
-            stop()
+            sys.exit(1)
         self.varyNnu = T
+
 
     def setMnu(self, mnu):
         if self.disabled:
             print("Cannot vary radiation parameter if disabled")
-            stop()
+            sys.exit(1)
         self.NuDensity.setMnu(mnu)
+
 
     def setNnu(self, mnu):
         if self.disabled:
             print("Cannot vary radiation parameter if disabled")
-            stop()
+            sys.exit(1)
         self.NuDensity.setNnu(mnu)
+
 
     def mnu(self):
         if self.disabled:
             return 0
         return self.NuDensity.mnu_
 
+
     def Nnu(self):
         if self.disabled:
             return 0
         return self.NuDensity.Nnu_
+
 
     def freeParameters(self):
         if self.disabled:
@@ -77,6 +85,7 @@ class RadiationAndNeutrinos:
             Nnu_par.setValue(self.Nnu())
             l.append(Nnu_par)
         return l
+
 
     def updateParams(self, pars):
         if self.disabled:
@@ -93,5 +102,4 @@ class RadiationAndNeutrinos:
         self.Omrad = self.omrad_pref_/(self.h**2)
         self.Omnuh2 = self.NuDensity.omnuh2today
         self.Omnu = self.Omnuh2/self.h**2
-
         return True

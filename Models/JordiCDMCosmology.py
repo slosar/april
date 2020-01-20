@@ -3,46 +3,44 @@
 # The world is full of mystery.
 #
 
-
+import sys
 import math as N
-from LCDMCosmology import *
+from LCDMCosmology import LCDMCosmology
+from ParamDefs import Ok_par, q_par, za_par, zb_par, wd_par, Od_par
 
 
 class JordiCDMCosmology(LCDMCosmology):
     def __init__(self):
-        # two parameters: Om and h
+        # Adding bunch of parameters.
         self.Ok = Ok_par.value
-        self.q = q_par.value
+        self.q  = q_par.value
         self.za = za_par.value
         self.zb = zb_par.value
         self.wd = wd_par.value
         self.Od = Od_par.value
         LCDMCosmology.__init__(self)
 
-    # my free parameters. We add Ok on top of LCDM ones (we inherit LCDM)
 
+    # my free parameters. We add Ok on top of LCDM ones (we inherit LCDM)
     def freeParameters(self):
-        return [Ok_par, q_par, za_par, zb_par, wd_par, Od_par]+LCDMCosmology.freeParameters(self)
+        return LCDMCosmology.freeParameters(self) + [Ok_par, q_par, za_par, zb_par, wd_par, Od_par]
+
 
     def updateParams(self, pars):
         ok = LCDMCosmology.updateParams(self, pars)
         if not ok:
             return False
         for p in pars:
-            if p.name == "q":
-                self.q = p.value
-            if p.name == "za":
-                self.za = p.value
-            if p.name == "zb":
-                self.zb = p.value
-            if p.name == "wd":
-                self.wd = p.value
-            if p.name == "Od":
-                self.Od = p.value
+            if p.name == "q":  self.q = p.value
+            if p.name == "za": self.za = p.value
+            if p.name == "zb": self.zb = p.value
+            if p.name == "wd": self.wd = p.value
+            if p.name == "Od": self.Od = p.value
             elif p.name == "Ok":
                 self.Ok = p.value
                 self.setCurvature(self.Ok)
         return True
+
 
     def Az(self, a):
         z = 1.0/a-1.0
@@ -53,7 +51,9 @@ class JordiCDMCosmology(LCDMCosmology):
         elif(z < self.zb):
             return 1-self.q
         else:
-            stop("BAD MODEL")
+            print("BAD MODEL")
+            sys.exit(1)
+
 
     def Qdrz(self, a):
         z = 1.0/a-1.0
@@ -66,6 +66,7 @@ class JordiCDMCosmology(LCDMCosmology):
         else:
             return 0.0
 
+
     # this is relative hsquared as a function of a
     ## i.e. H(z)^2/H(z=0)^2
     def RHSquared_a(self, a):
@@ -76,6 +77,7 @@ class JordiCDMCosmology(LCDMCosmology):
                    self.Omrad-self.Omnu-self.Qdrz(1.0)-self.Od)
         Omegad = self.Od*a**(-3*(1.0+self.wd))
         return (self.Omrad/a**4+self.Az(a)*self.Om/a**3+self.Ok/a**2+NuContrib+Olambda+self.Qdrz(a)+Omegad)
+
 
     def prior_loglike(self):
         if (self.za <= self.zb):

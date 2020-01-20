@@ -1,4 +1,4 @@
-april
+april.
 =====
 
 A simple MCMC code for cosmological parameter estimation where only
@@ -113,7 +113,7 @@ L=CompositeLikelihood([
     DR11LyaCross()
     ])
 
-and then connect it to a theory, like 
+and a then connect it to a theory, like 
 L.setTheory(oLCDMCosmology())
 
 This is now a nice package:
