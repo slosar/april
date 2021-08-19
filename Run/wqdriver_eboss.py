@@ -16,3 +16,6 @@ for l in lst:
         wqsubmit('pre', 'PolyOk', 'BBAO+SN', 5, 30000)
         wqsubmit('pre', 'PolyOkc', 'BBAO+SN', 5, 30000)
         wqsubmit('pre', 'PolyOkf', 'BBAO+SN', 5, 30000)
+    elif l== 'SNTest':
+        wqsubmit ('pre', 'LCDM', 'SN',5, 5000)
+        wqsubmit ('pre', 'oLCDM', 'SN',5, 5000)
